@@ -1,0 +1,100 @@
+.button {
+  @apply bg-dark/60 backdrop-blur-[10px] border border-white/80 py-4 px-7 rounded-full text-white inline-block font-medium uppercase text-sm sm:text-[15px] leading-none overflow-hidden relative;
+}
+
+.button-sm {
+  @apply py-[0.875rem] px-6;
+}
+
+.button::before,
+.button::after {
+  @apply absolute top-0 left-0 w-full h-full bg-white;
+}
+
+.button-dark {
+  @apply bg-white text-dark border-dark;
+}
+
+.button-dark::before,
+.button-dark::after {
+  @apply bg-dark;
+}
+
+.button span {
+  @apply block relative z-10;
+  transition: 0.2s color;
+}
+
+.button::before {
+  content: "";
+  width: 120%;
+  height: 0;
+  padding-bottom: 120%;
+  top: -110%;
+  left: -10%;
+  border-radius: 50%;
+  transform: translate3d(0, 68%, 0) scale3d(0, 0, 0);
+}
+
+.button::after {
+  content: "";
+  transform: translate3d(0, -100%, 0);
+  transition: transform 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button:hover::before {
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  transition: transform 0.5s cubic-bezier(0.1, 0, 0.3, 1);
+}
+
+.button:hover::after {
+  transform: translate3d(0, 0, 0);
+  transition-duration: 0.05s;
+  transition-delay: 0.4s;
+  transition-timing-function: linear;
+}
+
+.button:hover span {
+  @apply text-dark;
+  animation: MoveScaleUpInitial 0.25s forwards, MoveScaleUpEnd 0.25s forwards 0.25s;
+}
+
+.button-dark:hover span {
+  @apply text-white;
+}
+
+.link {
+  border-bottom-width: 0;
+  background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+  background-size: 0 1px;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.25s ease-in-out;
+}
+
+.link-dark {
+  background-image: linear-gradient(transparent, transparent), linear-gradient(#18181A, #18181A);
+}
+
+.link:hover {
+  background-size: 100% 1px;
+  background-position: 0 100%;
+}
+
+@keyframes MoveScaleUpInitial {
+  to {
+    transform: translate3d(0, -105%, 0) scale3d(1, 1.5, 1);
+    opacity: 0;
+  }
+}
+
+@keyframes MoveScaleUpEnd {
+  from {
+    transform: translate3d(0, 100%, 0) scale3d(1, 1.5, 1);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}

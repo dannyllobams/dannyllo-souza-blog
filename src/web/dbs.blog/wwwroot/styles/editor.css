@@ -1,0 +1,535 @@
+/* Post Editor Base */
+.post-editor-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.editor-header-right {
+    display: flex;
+    gap: 12px;
+}
+
+.post-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 32px;
+}
+
+.post-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.post-title-input {
+    font-size: 28px;
+    font-weight: 700;
+    padding: 20px 24px;
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+}
+
+.post-title-input::placeholder {
+    color: var(--admin-text-muted);
+}
+
+.slug-group {
+    margin-top: -12px;
+}
+
+.slug-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    overflow: hidden;
+}
+
+.slug-prefix {
+    padding: 12px 0 12px 16px;
+    color: var(--admin-text-muted);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.slug-input {
+    border: none !important;
+    background: transparent !important;
+    padding-left: 4px !important;
+}
+
+.slug-input:focus {
+    box-shadow: none !important;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.label-hint {
+    color: var(--admin-text-muted);
+    font-weight: 400;
+    font-size: 12px;
+}
+
+/* =====================================================
+   TIPTAP EDITOR STYLES
+   ===================================================== */
+
+.tiptap-editor-wrapper {
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+    overflow: hidden;
+}
+
+/* Toolbar */
+.tiptap-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--admin-border);
+    margin: 0 8px;
+}
+
+.toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--admin-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.toolbar-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--admin-text);
+}
+
+.toolbar-btn.is-active {
+    background: rgba(124, 58, 237, 0.2);
+    color: var(--admin-primary-hover);
+}
+
+.toolbar-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Tiptap Content Area */
+.tiptap-content {
+    min-height: 400px;
+    padding: 24px;
+}
+
+.tiptap-content .tiptap {
+    outline: none;
+    color: var(--admin-text);
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+.tiptap-content .tiptap>*:first-child {
+    margin-top: 0;
+}
+
+.tiptap-content .tiptap p {
+    margin: 0 0 1em;
+}
+
+.tiptap-content .tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: var(--admin-text-muted);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+.tiptap-content .tiptap h1 {
+    font-size: 2em;
+    font-weight: 700;
+    margin: 0.5em 0;
+}
+
+.tiptap-content .tiptap h2 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0.5em 0;
+}
+
+.tiptap-content .tiptap h3 {
+    font-size: 1.25em;
+    font-weight: 600;
+    margin: 0.5em 0;
+}
+
+.tiptap-content .tiptap ul,
+.tiptap-content .tiptap ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
+}
+
+.tiptap-content .tiptap li {
+    margin: 0.25em 0;
+}
+
+.tiptap-content .tiptap blockquote {
+    margin: 1em 0;
+    padding: 12px 20px;
+    border-left: 4px solid var(--admin-primary);
+    background: rgba(124, 58, 237, 0.1);
+    border-radius: 0 8px 8px 0;
+}
+
+.tiptap-content .tiptap pre {
+    margin: 1em 0;
+    padding: 16px 20px;
+    background: #0d0d0d;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 14px;
+    overflow-x: auto;
+}
+
+.tiptap-content .tiptap code {
+    padding: 2px 6px;
+    background: rgba(124, 58, 237, 0.15);
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+    color: var(--admin-primary-hover);
+}
+
+.tiptap-content .tiptap pre code {
+    padding: 0;
+    background: none;
+    color: #e0e0e0;
+}
+
+.tiptap-content .tiptap hr {
+    border: none;
+    border-top: 2px solid var(--admin-border);
+    margin: 2em 0;
+}
+
+.tiptap-content .tiptap a {
+    color: var(--admin-primary);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.tiptap-content .tiptap img,
+.tiptap-content .tiptap .editor-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1em 0;
+}
+
+.tiptap-content .tiptap img.ProseMirror-selectednode {
+    outline: 3px solid var(--admin-primary);
+    outline-offset: 2px;
+}
+
+/* Image alignment classes */
+.tiptap-content .tiptap img.align-left {
+    display: block;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.tiptap-content .tiptap img.align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tiptap-content .tiptap img.align-right {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+/* Sidebar Cards */
+.post-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-card {
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+    overflow: hidden;
+}
+
+.sidebar-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--admin-border);
+    cursor: pointer;
+}
+
+.sidebar-card-header.collapsed {
+    border-bottom: none;
+}
+
+.sidebar-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--admin-text);
+    margin: 0;
+}
+
+.toggle-icon {
+    color: var(--admin-text-muted);
+    transition: transform 0.3s ease;
+}
+
+.sidebar-card-header:not(.collapsed) .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.sidebar-card-body {
+    padding: 20px;
+}
+
+.status-info {
+    margin-bottom: 16px;
+}
+
+.form-select {
+    cursor: pointer;
+    appearance: none;
+    background-color: var(--admin-card-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+.form-select option {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    padding: 12px;
+}
+
+/* Categories */
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.category-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.category-item input {
+    accent-color: var(--admin-primary);
+}
+
+.category-label {
+    color: var(--admin-text);
+    font-size: 14px;
+}
+
+.btn-add-category {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    background: transparent;
+    border: 1px dashed var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-category:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+}
+
+/* Tags */
+.tags-input-wrapper {
+    margin-bottom: 12px;
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.tag-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(124, 58, 237, 0.15);
+    border-radius: 6px;
+    color: var(--admin-primary-hover);
+    font-size: 13px;
+}
+
+.tag-remove {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.tag-remove:hover {
+    opacity: 1;
+}
+
+.tags-hint {
+    font-size: 12px;
+    color: var(--admin-text-muted);
+    margin: 0;
+}
+
+/* Featured Image */
+.featured-image-upload {
+    border: 2px dashed var(--admin-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.featured-image-upload:hover {
+    border-color: var(--admin-primary);
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    text-align: center;
+}
+
+.upload-placeholder svg {
+    color: var(--admin-text-muted);
+    margin-bottom: 12px;
+}
+
+.upload-placeholder p {
+    color: var(--admin-text);
+    font-size: 14px;
+    margin: 0 0 4px;
+}
+
+.upload-placeholder span {
+    color: var(--admin-text-muted);
+    font-size: 12px;
+}
+
+/* SEO */
+.char-counter {
+    display: block;
+    text-align: right;
+    font-size: 11px;
+    color: var(--admin-text-muted);
+    margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .post-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .post-sidebar {
+        order: -1;
+    }
+
+    .toolbar-divider {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .editor-header-left,
+    .editor-header-right {
+        width: 100%;
+    }
+
+    .editor-header-right {
+        flex-wrap: wrap;
+    }
+
+    .editor-header-right .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .tiptap-content {
+        padding: 16px;
+    }
+}

@@ -1,0 +1,45 @@
+:root {
+  color-scheme: dark;
+  --font-primary: "Outfit", sans-serif;
+  --font-secondary: "Melodrama", serif;
+}
+
+html {
+  @apply overflow-x-hidden font-primary bg-dark text-white;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+body::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 16px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* noice background */
+main::after,
+footer::after,
+.page-banner::after {
+  @apply content-[''] bg-[url("../images/noise.webp")] h-full w-full absolute top-0 left-0 z-[-99999] opacity-75 mix-blend-overlay pointer-events-none;
+}
+footer::after {
+  @apply opacity-10;
+}
+
+/* update container */
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1280px !important;
+  }
+}
+
+/* stretched link */
+.stretched-link::after {
+  @apply content-[''] z-10 absolute inset-0 bg-transparent pointer-events-auto;
+}

@@ -1,0 +1,30 @@
+.homepage-banner {
+  @apply pt-20 sm:pt-24 lg:pt-36 pb-0 lg:pb-12 relative;
+}
+
+.homepage-banner::before {
+  position: absolute;
+  content: "";
+  z-index: -1;
+  top: -30%;
+  height: 180%;
+  width: 150%;
+  left: -25%;
+  background: url(../images/noise.webp) repeat,
+    linear-gradient(83.21deg, #3245ff 0%, #0B0E14 100%);
+  background-blend-mode: overlay;
+  -webkit-mask-image: radial-gradient(rgba(0, 0, 0, 0.5), transparent 70%);
+  mask-image: radial-gradient(rgba(0, 0, 0, 0.5), transparent 70%);
+}
+
+.homepage-banner .bg-text {
+  @apply fixed top-[-5%] left-[-5%] pointer-events-none -z-[99999] text-[115vh] leading-none whitespace-nowrap font-secondary;
+}
+
+.homepage-banner .bg-text span {
+  @apply opacity-[0.04];
+}
+
+.homepage-banner .name {
+  @apply text-[clamp(3em,_8vw,_6.5em)] leading-tight font-semibold;
+}

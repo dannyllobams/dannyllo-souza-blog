@@ -1,0 +1,112 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["Controller"];
+    var action = ViewContext.RouteData.Values["Action"];
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charSet="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <title>Dannyllo Souza - .NET Expert</title>
+
+    <meta name="author" content="Dannyllo Souza" />
+    <meta name="description" content="Dannyllo Souza - .NET Backend Developer Blog" />
+
+    <meta property="og:title" content="Dannyllo Souza — .NET Backend Developer Blog" />
+    <meta property="og:description" content="Deep technical insights, architecture guides, best practices, and advanced content about .NET backend development." />
+    <meta property="og:image" content="~/images/ogimage.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <link rel="shortcut icon" href="~/images/favicon.png" type="image/x-icon" />
+
+    <link rel="stylesheet" href="~/plugins/aos/aos.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/styles/output.css" asp-append-version="true">
+</head>
+
+<body>
+
+    <!-- start of header -->
+    <header class="fixed top-0 z-[9000] w-full header [&.invisible]:-translate-y-full">
+        <div class="container">
+            <div class="flex justify-between py-6 items-center relative">
+                <!-- logo -->
+                <div class="hideOnScroll lg:[&.scrolled]:opacity-0 lg:[&.scrolled]:-translate-x-8 w-1/4 transition-all duration-300">
+                    <a class="inline-block align-middle" asp-controller="Home" asp-action="Index">
+                        <img alt="Dannyllo Souza" width="100" src="~/images/logo-white.png" />
+                    </a>
+                </div>
+
+                <!-- navbar -->
+                <nav class="navbar">
+                    <span class="indicator"></span>
+                    <a is-active-route asp-controller="Home", asp-action="Index">Home</a>
+                    <a is-active-route asp-controller="Home" asp-action="About">About</a>
+                    <a is-active-route asp-controller="Blog" asp-action="Index">Blog</a>
+                    <a is-active-route asp-controller="Home" asp-action="Contact">Contact</a>
+                </nav>
+                <div class="navOverlay"></div>
+
+                <!-- toggle mobile-nav -->
+                <button type="button" aria-label="Toggle Mobile Navigation" class="navToggler">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M4 8l16 0"></path>
+                        <path d="M4 16l16 0"></path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M18 6l-12 12"></path>
+                        <path d="M6 6l12 12"></path>
+                    </svg>
+                </button>
+
+                <!-- social links -->
+                <div class="hideOnScroll lg:[&.scrolled]:opacity-0 lg:[&.scrolled]:translate-x-8 w-1/4 transition-all duration-300 text-right text-sm hidden lg:block">
+                    <span class="block text-white/75 mb-1">Social Links:</span>
+                    <ul class="inline-flex gap-x-4">
+                        <li class="inline-block hover:opacity-75 transition-op duration-300">
+                            <a href="https://linkedin.com/" class="link">IN</a>
+                        </li>
+                        <li class="inline-block hover:opacity-75 transition-op duration-300">
+                            <a href="https://github.com/" class="link">GITHUB</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- end of header -->
+
+    @RenderBody()
+
+    <!-- end of main -->
+    <!-- ================= start of footer ================= -->
+    <footer class="pt-28 pb-20 sticky bottom-0 z-[1]">
+        <div class="container">
+            <div class="row">
+                <div class="md:col-12 text-center md:text-left mb-4">
+                    <!-- Social Links -->
+                    <ul class="inline-flex flex-wrap justify-center md:justify-start gap-x-6">
+                        <li class="inline-block hover:opacity-75 transition-op duration-300">
+                            <a href="https://linkedin.com/" class="link">Linkedin</a>
+                        </li>
+                        <li class="inline-block hover:opacity-75 transition-op duration-300">
+                            <a href="https://github.com/" class="link">Github</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Copyright -->
+                <div class="md:col-6 text-center md:text-left mb-4 md:mb-0">
+                    <p class="text-white/75">© @DateTime.Now.Year Dannyllo Souza. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ================= end of footer ================= -->
+    <!-- start of script -->
+    <script src="~/plugins/aos/aos.js" asp-append-version="true"></script>
+    <script src="~/scripts/main.js" asp-append-version="true"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+.header, .navbar {
+  transition: 0.3s ease;
+}
+
+.header.active .navbar {
+  @apply bg-dark/80;
+}
+
+.navbar {
+  @apply lg:flex bg-dark/30 backdrop-blur-[10px] lg:rounded-full rounded-3xl px-2 lg:py-2 py-5 border border-white/10 lg:duration-0 duration-300 lg:static absolute right-0 top-6 z-30 max-w-full overflow-hidden lg:w-auto w-56 lg:scale-100 scale-90 lg:opacity-100 opacity-0 lg:visible invisible origin-top-right;
+}
+.navOpen .navbar {
+  @apply opacity-100 scale-100 visible;
+}
+
+.navbar a {
+  @apply py-3 px-[22px] leading-none relative z-20 block text-white/50 lg:text-white/100 hover:text-white/100;
+  transition: 0.3s color 0s, 0.3s opacity 0s;
+}
+
+.navbar .indicator {
+  @apply absolute h-full w-full left-0 top-0 hidden lg:block opacity-0 scale-50;
+  transition: 0.45s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.navbar .indicator::before {
+  @apply rounded-full content-[""] h-[calc(100%_-_1rem)] top-2 w-full absolute left-0 bg-white/10;
+}
+
+.navToggler {
+  @apply block lg:hidden w-12 h-12 border border-white/10 rounded-full p-1 relative z-40;
+}
+.navToggler svg {
+  @apply m-auto;
+}
+.navToggler svg:last-child {
+  @apply hidden;
+}
+.navOpen .navToggler svg:first-child {
+  @apply hidden;
+}
+.navOpen .navToggler svg:last-child {
+  @apply block;
+}
+
+.navOverlay {
+  @apply fixed inset-0 bg-black/80 z-20 transition-all duration-500 opacity-0 invisible;
+}
+
+.navOverlay.navOverlayVisible {
+  @apply opacity-100 visible;
+}

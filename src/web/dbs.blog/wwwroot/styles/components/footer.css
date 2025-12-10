@@ -1,0 +1,73 @@
+.footer-cta {
+  @apply relative w-[1920px] max-w-full mx-auto overflow-hidden;
+}
+.footer-cta .animated-line {
+  @apply relative flex whitespace-nowrap;
+}
+.footer-cta .animated-line .line-block,
+.footer-cta .animated-line .line-block-copy {
+  @apply pb-[6px] flex;
+}
+.footer-cta .animated-line .line-block-copy {
+  backface-visibility: hidden;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: translateX(100%) translateZ(0);
+  will-change: transform;
+}
+.footer-cta .animated-line-one .line-block {
+  animation: move-horizontal-forward 20s linear infinite;
+}
+.footer-cta .animated-line-one .line-block-copy {
+  animation: move-horizontal-forward-copy 20s linear infinite;
+}
+
+.footer-cta .animated-line-two .line-block {
+  animation: move-horizontal-backward 20s linear infinite;
+}
+.footer-cta .animated-line-two .line-block-copy {
+  animation: move-horizontal-backward-copy 20s linear infinite;
+}
+
+.footer-cta .cta-text {
+  transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.footer-cta .cta-icon {
+  opacity: .75;
+  transform: rotateX(0deg);
+  transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+@screen sm {
+  .footer-cta .cta-icon {
+    transform: rotateX(88deg);
+  }
+}
+.footer-cta:hover .cta-text {
+  @apply opacity-75;
+}
+.footer-cta:hover .cta-icon {
+  opacity: 1;
+  transform: rotateX(0) rotateZ(-45deg);
+}
+.footer-cta:hover .animated-line .line-block,
+.footer-cta:hover .animated-line .line-block-copy {
+  animation-play-state: paused;
+}
+
+@keyframes move-horizontal-forward {
+  0% {transform: translateX(0)}
+  to {transform: translateX(100%)}
+}
+@keyframes move-horizontal-forward-copy {
+  0% {transform: translateX(-100%)}
+  to {transform: translateX(0)}
+}
+@keyframes move-horizontal-backward {
+  0% {transform: translateX(0)}
+  to {transform: translateX(-100%)}
+}
+@keyframes move-horizontal-backward-copy {
+  0% {transform: translateX(100%)}
+  to {transform: translateX(0)}
+}

@@ -1,0 +1,19 @@
+@import "fonts";
+@import "tailwindcss/base";
+@import "base";
+
+@import "tailwindcss/components";
+@import "components/header";
+@import "components/button";
+@import "components/banner";
+@import "components/work-process";
+@import "components/footer";
+
+@import "components";
+
+@import "tailwindcss/utilities";
+@layer utilities {
+  .bg-overlay {
+    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(9,9,121,0) 50%, rgba(0,0,0,0.6) 100%);
+  }
+}

@@ -1,0 +1,250 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+                    <path d="M18 14h-8"/>
+                    <path d="M15 18h-5"/>
+                    <path d="M10 6h8v4h-8V6Z"/>
+                </svg>
+            </div>
+            <span class="stat-trend up">+12%</span>
+        </div>
+        <div class="stat-value">24</div>
+        <div class="stat-label">Total Posts</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-icon green">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </div>
+            <span class="stat-trend up">+28%</span>
+        </div>
+        <div class="stat-value">1.2K</div>
+        <div class="stat-label">Page Views</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-icon yellow">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <span class="stat-trend up">+5%</span>
+        </div>
+        <div class="stat-value">48</div>
+        <div class="stat-label">Comments</div>
+    </div>
+</div>
+
+<!-- Dashboard Grid -->
+<div class="dashboard-grid">
+    <!-- Recent Posts -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">Recent Posts</h2>
+            <a href="/admin/post/newpost" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M12 5v14"/>
+                </svg>
+                New Post
+            </a>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <table class="blog-table">
+                <thead>
+                    <tr>
+                        <th>Post</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Mock Data -->
+                    <tr>
+                        <td>
+                            <div class="blog-info">
+                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
+                                <div>
+                                    <div class="blog-title">Introduction to ASP.NET Core 8</div>
+                                    <div class="blog-excerpt">Learn the basic concepts of ASP.NET Core 8 and how to build applications...</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge published">Published</span></td>
+                        <td style="color: var(--admin-text-muted); font-size: 14px;">28 Nov 2024</td>
+                        <td>
+                            <div class="action-btns">
+                                <button type="button" class="action-btn edit" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                        <path d="m15 5 4 4"/>
+                                    </svg>
+                                </button>
+                                <button type="button" class="action-btn delete" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 6h18"/>
+                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="blog-info">
+                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
+                                <div>
+                                    <div class="blog-title">Entity Framework Core: Best Practices</div>
+                                    <div class="blog-excerpt">Tips and tricks to optimize your queries with EF Core...</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge published">Published</span></td>
+                        <td style="color: var(--admin-text-muted); font-size: 14px;">25 Nov 2024</td>
+                        <td>
+                            <div class="action-btns">
+                                <button type="button" class="action-btn edit" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                        <path d="m15 5 4 4"/>
+                                    </svg>
+                                </button>
+                                <button type="button" class="action-btn delete" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 6h18"/>
+                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="blog-info">
+                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
+                                <div>
+                                    <div class="blog-title">Clean Architecture with .NET</div>
+                                    <div class="blog-excerpt">Implementing Clean Architecture in enterprise projects...</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge draft">Draft</span></td>
+                        <td style="color: var(--admin-text-muted); font-size: 14px;">20 Nov 2024</td>
+                        <td>
+                            <div class="action-btns">
+                                <button type="button" class="action-btn edit" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                        <path d="m15 5 4 4"/>
+                                    </svg>
+                                </button>
+                                <button type="button" class="action-btn delete" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 6h18"/>
+                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="blog-info">
+                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
+                                <div>
+                                    <div class="blog-title">CQRS and MediatR in Practice</div>
+                                    <div class="blog-excerpt">How to implement the CQRS pattern using MediatR in .NET...</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge draft">Draft</span></td>
+                        <td style="color: var(--admin-text-muted); font-size: 14px;">15 Nov 2024</td>
+                        <td>
+                            <div class="action-btns">
+                                <button type="button" class="action-btn edit" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                        <path d="m15 5 4 4"/>
+                                    </svg>
+                                </button>
+                                <button type="button" class="action-btn delete" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 6h18"/>
+                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">Quick Actions</h2>
+        </div>
+        <div class="card-body">
+            <div class="quick-actions">
+                <a href="/admin/post/newpost" class="quick-action-item">
+                    <div class="quick-action-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"/>
+                        </svg>
+                    </div>
+                    <div class="quick-action-text">
+                        <h4>Create New Post</h4>
+                        <p>Write a new article for the blog</p>
+                    </div>
+                </a>
+                
+                <a href="/admin/categories" class="quick-action-item">
+                    <div class="quick-action-icon" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
+                            <path d="M7 7h.01"/>
+                        </svg>
+                    </div>
+                    <div class="quick-action-text">
+                        <h4>Manage Categories</h4>
+                        <p>Organize your posts by category</p>
+                    </div>
+                </a>
+                
+                <a href="/admin/settings" class="quick-action-item">
+                    <div class="quick-action-icon" style="background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </div>
+                    <div class="quick-action-text">
+                        <h4>Settings</h4>
+                        <p>Configure the blog settings</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
