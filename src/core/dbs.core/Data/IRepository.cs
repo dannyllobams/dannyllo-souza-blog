@@ -6,6 +6,7 @@ namespace dbs.core.Data
     {
         IUnitOfWork UnitOfWork { get; }
 
+        Task<int> CountAsync();
         Task<T?> GetByIdAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync(int page, int pageSize);
         Task<Guid> AddAsync(T entity);

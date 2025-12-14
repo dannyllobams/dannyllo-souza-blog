@@ -1,0 +1,49 @@
+﻿using Cortex.Mediator.Queries;
+using dbs.blog.DTOs;
+using dbs.core.Messages;
+using dbs.domain.Repositories;
+using FluentValidation;
+using FluentValidation.Results;
+
+namespace dbs.blog.Application.Queries
+{
+    public class PostsQuery : Query<IEnumerable<PostListItemDTO>>
+    {
+        public int PageNumber { get; set; } = 1;
+        public bool PublishedOnly { get; set; } = true;
+
+        public override bool EhValido()
+        {
+            ValidationResult = new PostsQueryValidator().Validate(this);
+            return ValidationResult.IsValid;
+        }
+    }
+
+    public class PostsQueryValidator : AbstractValidator<PostsQuery>
+    {
+        public PostsQueryValidator()
+        {
+            RuleFor(x => x.PageNumber)
+                .GreaterThan(0).WithMessage("Page number must be greater than zero.");
+        }
+    }
+
+    public class PostsQueryHandler : QueryHandler, IQueryHandler<PostsQuery, QueryResult<IEnumerable<PostListItemDTO>>>
+    {
+        private const int PAGESIZE = 10;
+
+
+        private readonly IPostsRepository _postsRepository;
+        public PostsQueryHandler(IPostsRepository postsRepository)
+        {
+            _postsRepository = postsRepository;
+        }
+
+        public async Task<QueryResult<IEnumerable<PostListItemDTO>>> Handle(PostsQuery query, CancellationToken cancellationToken)
+        {
+            var posts = await _postsRepository.GetAllAsync(query.PageNumber, PAGESIZE);
+
+            return Response(posts.Select(PostListItemDTO.ToPostListItemDTO));
+        }
+    }
+}

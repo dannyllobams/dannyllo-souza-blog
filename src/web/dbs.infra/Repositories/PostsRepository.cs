@@ -1,4 +1,4 @@
-﻿using dbs.core.Data;
+﻿using dbs.domain.Basics.Enum;
 using dbs.domain.Model;
 using dbs.domain.Repositories;
 using dbs.infra.Context;
@@ -6,25 +6,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dbs.infra.Repositories
 {
-    internal class PostsRepository : IPostsRepository
+    public class PostsRepository : RepositoryBase<Post>, IPostsRepository
     {
-        private readonly BlogContext _context;
-        public IUnitOfWork UnitOfWork => _context;
-
-        public PostsRepository(BlogContext context)
+        public PostsRepository(BlogContext context) : base(context)
         {
-            _context = context;
+        }
+
+        public async Task<IEnumerable<Post>> GetAllPublishedsAsync(int page, int pageSize)
+        {
+            return await _blogContext.Posts
+                .Include(post => post.Categories)
+                .Include(post => post.Tags)
+                .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
+                .AsSplitQuery()
+                .Where(post => post.Status == PostStatus.PUBLISHED)
+                .OrderByDescending(post => post.CreatedAt)
+                .AsNoTracking()
+                .OrderByDescending(post => post.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Post>> GetAllByCategoryAsync(Category category, int page, int pageSize)
         {
-            return await _context.Posts
+            return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
                 .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
                 .AsSplitQuery()
                 .Where(post => post.Categories.Any(t => t.Id == category.Id))
                 .AsNoTracking()
+                .OrderByDescending(post => post.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -32,68 +45,59 @@ namespace dbs.infra.Repositories
 
         public async Task<IEnumerable<Post>> GetAllByTagAsync(Tag tag, int page, int pageSize)
         {
-            return await _context.Posts
+            return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
                 .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
                 .AsSplitQuery()
-                .Where(post => post.Tags.Any(t => t.Id == tag.Id))
+                .Where(post => post.Tags.Any(t => t.Id == tag.Id))                
                 .AsNoTracking()
+                .OrderByDescending(post => post.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<Post?> GetByIdAsync(Guid id)
+        public override async Task<Post?> GetByIdAsync(Guid id)
         {
-            return await _context.Posts
+            return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
                 .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
                 .FirstOrDefaultAsync(post => post.Id == id);
         }
 
-        public async Task<IEnumerable<Post>> GetAllAsync(int page, int pageSize)
+        public override async Task<IEnumerable<Post>> GetAllAsync(int page, int pageSize)
         {
-            return await _context.Posts
+            return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
                 .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
                 .AsSplitQuery()
                 .AsNoTracking()
+                .OrderByDescending(post => post.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<Guid> AddAsync(Post entity)
+        //Comments
+        public async Task<int> CountCommentsAsync()
         {
-            await _context.Posts.AddAsync(entity);
-            return entity.Id;
-        }
-
-        public void Update(Post entity)
-        {
-            _context.Posts.Update(entity);
-        }
-
-        public void Remove(Post entity)
-        {
-            _context.Posts.Remove(entity);
+            return await _blogContext.Categories.CountAsync();
         }
 
         //Categories
-
         public async Task<Category?> GetCategoryByNameAsync(string categoryName)
         {
-            return await _context.Categories
+            return await _blogContext.Categories
                 .Include(category => category.Posts)
                 .FirstOrDefaultAsync(c => c.Name == categoryName);
         }
 
         public async Task<bool> IsCategoryUsedAsync(string name)
         {
-            return await _context.Posts
+            return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Where(post => post.Categories.Any(c => c.Name == name))
                 .AnyAsync();
@@ -101,21 +105,21 @@ namespace dbs.infra.Repositories
 
         public void RemoveCategory(Category category)
         {
-            _context.Categories.Remove(category);
+            _blogContext.Categories.Remove(category);
         }
 
 
         //Tags
         public async Task<Tag?> GetTagByNameAsync(string tagName)
         {
-            return await _context.Tags
+            return await _blogContext.Tags
                 .Include(tag => tag.Posts)
                 .FirstOrDefaultAsync(c => c.Name == tagName);
         }
 
         public async Task<bool> IsTagUsedAsync(string tagName)
         {
-            return await _context.Posts
+            return await _blogContext.Posts
                 .Include(post => post.Tags)
                 .Where(post => post.Tags.Any(t => t.Name == tagName))
                 .AnyAsync();
@@ -123,7 +127,7 @@ namespace dbs.infra.Repositories
 
         public void RemoveTag(Tag tag)
         {
-            _context.Tags.Remove(tag);
+            _blogContext.Tags.Remove(tag);
         }
     }
 }

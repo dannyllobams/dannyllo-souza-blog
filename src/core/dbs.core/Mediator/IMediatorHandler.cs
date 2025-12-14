@@ -14,7 +14,6 @@ namespace dbs.core.Mediator
             where TResult : CommandResult;
 
         Task<QueryResult<TResult>> ProjectionQuery<T, TResult>(T query, CancellationToken cancelationToken = default)
-            where T : Query<TResult> 
-            where TResult : class;
+            where T : Query<TResult>;
     }
 }

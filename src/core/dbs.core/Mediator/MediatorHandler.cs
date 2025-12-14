@@ -27,7 +27,6 @@ namespace dbs.core.Mediator
 
         public async Task<QueryResult<TResult>> ProjectionQuery<T, TResult>(T query, CancellationToken cancelationToken = default)
             where T : Query<TResult>
-            where TResult : class
         {
             return await _mediator.SendQueryAsync<T, QueryResult<TResult>>(query, cancelationToken);
         }

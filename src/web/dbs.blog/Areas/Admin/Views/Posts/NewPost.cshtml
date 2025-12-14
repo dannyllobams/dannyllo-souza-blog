@@ -1,3 +1,7 @@
+@using dbs.blog.Models
+
+@model AddPostViewModel
+
 @{
     ViewData["Title"] = "New Post";
     ViewData["Breadcrumb"] = "New Post";
@@ -8,10 +12,11 @@
 }
 
 <div class="post-editor-container">
+
     <!-- Header Actions -->
     <div class="editor-header">
         <div class="editor-header-left">
-            <a href="/admin/post" class="btn btn-secondary">
+            <a asp-action="Index" asp-controller="Home" asp-area="admin" class="btn btn-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m12 19-7-7 7-7"/>
                     <path d="M19 12H5"/>
@@ -20,28 +25,31 @@
             </a>
         </div>
         <div class="editor-header-right">
-            <button type="button" class="btn btn-secondary">
+@*             <button type="button" class="btn btn-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
                     <circle cx="12" cy="12" r="3"/>
                 </svg>
                 Preview
-            </button>
+            </button> *@
             <button type="button" class="btn btn-secondary" id="btnSaveDraft">
                 Save Draft
             </button>
-            <button type="button" class="btn btn-primary" id="btnPublish">
+@*             <button type="button" class="btn btn-primary" id="btnPublish">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 17V3"/>
                     <path d="m6 11 6 6 6-6"/>
                     <path d="M19 21H5"/>
                 </svg>
                 Publish
-            </button>
+            </button> *@
         </div>
     </div>
     
     <form id="postForm" class="post-form">
+
+        <div asp-validation-summary="All" class="validation-summary" style="margin: 1rem; color: red; font-size: 0.725rem;"></div>
+
         <div class="post-form-grid">
             <!-- Main Content -->
             <div class="post-main">
@@ -164,7 +172,7 @@
                 <!-- Excerpt -->
                 <div class="form-group">
                     <label class="form-label">Excerpt <span class="label-hint">(shown in listings)</span></label>
-                    <textarea id="postExcerpt" name="excerpt" class="form-input form-textarea" rows="3" placeholder="Enter a brief summary of the post..."></textarea>
+                    <textarea id="postExcerpt" name="excerpt" class="form-input form-textarea" rows="3" placeholder="Enter a brief summary of the post..." maxlength="1000"></textarea>
                 </div>
             </div>
             
@@ -178,13 +186,6 @@
                     <div class="sidebar-card-body">
                         <div class="status-info">
                             <span class="status-badge draft">Draft</span>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Visibility</label>
-                            <select id="postVisibility" name="visibility" class="form-input form-select">
-                                <option value="public">Public</option>
-                                <option value="password">Password Protected</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -227,7 +228,6 @@
                     </div>
                 </div>
                 
-                <!-- Tags Card -->
                 <div class="sidebar-card">
                     <div class="sidebar-card-header">
                         <h3 class="sidebar-card-title">Tags</h3>
@@ -250,7 +250,6 @@
                     </div>
                 </div>
                 
-                <!-- Featured Image Card -->
                 <div class="sidebar-card">
                     <div class="sidebar-card-header">
                         <h3 class="sidebar-card-title">Featured Image</h3>
@@ -267,19 +266,19 @@
                                 <span>PNG, JPG up to 5MB</span>
                             </div>
                             <input type="file" id="featuredImageInput" name="featuredImage" accept="image/*" hidden>
+                            <input type="hidden" asp-for="UrlMainImage" id="UrlMainImage" />
                         </div>
                     </div>
                 </div>
                 
-                <!-- SEO Card -->
                 <div class="sidebar-card">
-                    <div class="sidebar-card-header collapsed" data-toggle="seoContent">
+                    <div class="sidebar-card-header" data-toggle="seoContent">
                         <h3 class="sidebar-card-title">SEO</h3>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
                             <path d="m6 9 6 6 6-6"/>
                         </svg>
                     </div>
-                    <div class="sidebar-card-body" id="seoContent" style="display: none;">
+                    <div class="sidebar-card-body" id="seoContent">
                         <div class="form-group">
                             <label class="form-label">Meta Title</label>
                             <input type="text" id="metaTitle" name="metaTitle" class="form-input" placeholder="SEO Title">
@@ -298,7 +297,6 @@
 </div>
 
 @section Scripts {
-<!-- Tiptap via CDN -->
 <script type="module">
     import { Editor } from 'https://esm.sh/@@tiptap/core@2.1.13'
     import StarterKit from 'https://esm.sh/@@tiptap/starter-kit@2.1.13'
@@ -307,7 +305,6 @@
     import Image from 'https://esm.sh/@@tiptap/extension-image@2.1.13'
     import TextAlign from 'https://esm.sh/@@tiptap/extension-text-align@2.1.13'
 
-    // Initialize Tiptap Editor
     const editor = new Editor({
         element: document.querySelector('#tiptapEditor'),
         extensions: [
@@ -352,7 +349,6 @@
         }
     });
 
-    // Toolbar buttons
     document.querySelectorAll('.toolbar-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const action = btn.dataset.action;
@@ -423,25 +419,18 @@
         });
     });
 
-    // Function to align content (text or image)
     function alignContent(alignment) {
-        // Check if an image is selected
         const selectedImage = document.querySelector('#tiptapEditor .ProseMirror-selectednode');
         
         if (selectedImage && selectedImage.tagName === 'IMG') {
-            // Remove existing alignment classes
             selectedImage.classList.remove('align-left', 'align-center', 'align-right');
-            // Add new alignment class
             selectedImage.classList.add('align-' + alignment);
-            // Sync content
             document.getElementById('editorContent').value = editor.getHTML();
         } else {
-            // Use Tiptap's TextAlign for text
             editor.chain().focus().setTextAlign(alignment).run();
         }
     }
 
-    // Update toolbar button states
     function updateToolbarState() {
         document.querySelectorAll('.toolbar-btn').forEach(btn => {
             const action = btn.dataset.action;
@@ -497,15 +486,12 @@
             btn.classList.toggle('is-active', isActive);
         });
         
-        // Update undo/redo states
         document.querySelector('[data-action="undo"]').disabled = !editor.can().undo();
         document.querySelector('[data-action="redo"]').disabled = !editor.can().redo();
     }
 
-    // Expose editor to window for debugging
     window.tiptapEditor = editor;
 
-    // Auto-generate slug from title
     const titleInput = document.getElementById('postTitle');
     const slugInput = document.getElementById('postSlug');
 
@@ -519,7 +505,6 @@
         slugInput.value = slug;
     });
 
-    // Featured image upload
     const uploadArea = document.getElementById('featuredImageUpload');
     const fileInput = document.getElementById('featuredImageInput');
 
@@ -534,12 +519,41 @@
         uploadArea.style.borderColor = 'var(--admin-border)';
     });
 
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.style.borderColor = 'var(--admin-border)';
+    fileInput.addEventListener('change', async function() {
+        if (this.files && this.files[0]) {
+            const formData = new FormData();
+            formData.append('file', this.files[0]);
+
+            const placeholder = uploadArea.querySelector('.upload-placeholder');
+            const originalContent = placeholder.innerHTML;
+            placeholder.innerHTML = '<div class="spinner">Uploading...</div>';
+
+            try {
+                const response = await fetch('/Admin/Posts/UploadImage', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    document.getElementById('UrlMainImage').value = data.url;
+
+                    placeholder.innerHTML = `<img src="${data.url}" alt="Featured Image" style="max-width: 100%; max-height: 200px; object-fit: contain;">`;
+                    uploadArea.classList.add('has-image');
+                } else {
+                    console.error('Upload failed');
+                    placeholder.innerHTML = originalContent;
+                    alert('Failed to upload image. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                placeholder.innerHTML = originalContent;
+                alert('An error occurred during upload.');
+            }
+        }
     });
 
-    // Toggle SEO section
     const seoHeader = document.querySelector('[data-toggle="seoContent"]');
     const seoContent = document.getElementById('seoContent');
 
@@ -548,7 +562,60 @@
         seoContent.style.display = seoContent.style.display === 'none' ? 'block' : 'none';
     });
 
-    // Character counters
+    document.getElementById('btnSaveDraft').addEventListener('click', function() {
+        const form = document.getElementById('postForm');
+        
+        document.getElementById('editorContent').value = editor.getHTML();
+
+        const existingHiddenTags = form.querySelectorAll('input[type="hidden"][name="Tags"]');
+        existingHiddenTags.forEach(el => el.remove());
+
+        const tagElements = document.querySelectorAll('#tagsList .tag-item');
+        tagElements.forEach(tagEl => {
+            const tagText = tagEl.childNodes[0].textContent.trim();
+            if(tagText) {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'Tags';
+                hiddenInput.value = tagText;
+                form.appendChild(hiddenInput);
+            }
+        });
+
+        form.method = "post";
+        form.action = "/Admin/Posts/NewPost";
+        form.submit();
+    });
+
+    const tagsInput = document.getElementById('tagsInput');
+    const tagsList = document.getElementById('tagsList');
+    
+    tagsInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const tagValue = this.value.trim();
+            
+            if (tagValue) {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'tag-item';
+                tagSpan.innerHTML = `${tagValue} <button type="button" class="tag-remove">&times;</button>`;
+                
+                tagsList.appendChild(tagSpan);
+                this.value = '';
+                
+                tagSpan.querySelector('.tag-remove').addEventListener('click', function() {
+                    tagSpan.remove();
+                });
+            }
+        }
+    });
+
+    document.querySelectorAll('.tag-remove').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.parentElement.remove();
+        });
+    });
+
     document.getElementById('metaTitle').addEventListener('input', function() {
         this.nextElementSibling.textContent = `${this.value.length}/60`;
     });

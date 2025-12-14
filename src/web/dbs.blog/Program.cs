@@ -2,7 +2,7 @@ using dbs.blog.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureWebApp();
+builder.Services.ConfigureWebApp(builder.Configuration);
 
 var app = builder.Build();
 

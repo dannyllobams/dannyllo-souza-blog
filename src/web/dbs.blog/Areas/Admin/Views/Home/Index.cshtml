@@ -1,3 +1,7 @@
+@using dbs.blog.Areas.Admin.Models
+
+@model DashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -14,9 +18,9 @@
                     <path d="M10 6h8v4h-8V6Z"/>
                 </svg>
             </div>
-            <span class="stat-trend up">+12%</span>
+            @* <span class="stat-trend up">+12%</span> *@
         </div>
-        <div class="stat-value">24</div>
+        <div class="stat-value">@Model.TotalPosts</div>
         <div class="stat-label">Total Posts</div>
     </div>
     
@@ -28,9 +32,9 @@
                     <circle cx="12" cy="12" r="3"/>
                 </svg>
             </div>
-            <span class="stat-trend up">+28%</span>
+            @* <span class="stat-trend up">+28%</span> *@
         </div>
-        <div class="stat-value">1.2K</div>
+        <div class="stat-value">@(String.Format("{0:0.0} K", (Decimal)Model.TotalPageViews / 1000))</div>
         <div class="stat-label">Page Views</div>
     </div>
     
@@ -41,9 +45,9 @@
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
             </div>
-            <span class="stat-trend up">+5%</span>
+            @* <span class="stat-trend up">+5%</span> *@
         </div>
-        <div class="stat-value">48</div>
+        <div class="stat-value">@Model.TotalComments</div>
         <div class="stat-label">Comments</div>
     </div>
 </div>
@@ -54,7 +58,7 @@
     <div class="content-card">
         <div class="card-header">
             <h2 class="card-title">Recent Posts</h2>
-            <a href="/admin/post/newpost" class="btn btn-primary">
+            <a asp-action="NewPost" asp-controller="Posts" asp-area="admin" class="btn btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12h14"/>
                     <path d="M12 5v14"/>
@@ -73,127 +77,41 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Mock Data -->
-                    <tr>
-                        <td>
-                            <div class="blog-info">
-                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
-                                <div>
-                                    <div class="blog-title">Introduction to ASP.NET Core 8</div>
-                                    <div class="blog-excerpt">Learn the basic concepts of ASP.NET Core 8 and how to build applications...</div>
+                    @foreach(var post in Model.Posts)
+                    {
+                        <tr>
+                            <td>
+                                <div class="blog-info">
+                                    <img src="@post.MainImageUrl" alt="" class="blog-thumbnail">
+                                    <div>
+                                        <div class="blog-title">@post.Title</div>
+                                        <div class="blog-excerpt">@post.GetShorSummary()</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td><span class="status-badge published">Published</span></td>
-                        <td style="color: var(--admin-text-muted); font-size: 14px;">28 Nov 2024</td>
-                        <td>
-                            <div class="action-btns">
-                                <button type="button" class="action-btn edit" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                                        <path d="m15 5 4 4"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="action-btn delete" title="Delete">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 6h18"/>
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="blog-info">
-                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
-                                <div>
-                                    <div class="blog-title">Entity Framework Core: Best Practices</div>
-                                    <div class="blog-excerpt">Tips and tricks to optimize your queries with EF Core...</div>
+                            </td>
+                            <td>
+                                <span class="status-badge @(Enum.GetName(post.Status)!.ToLower())" style="text-transform: capitalize;">@(Enum.GetName(post.Status)!)</span>
+                            </td>
+                            <td style="color: var(--admin-text-muted); font-size: 14px;">@post.Date.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button type="button" class="action-btn edit" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                            <path d="m15 5 4 4" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="action-btn delete" title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 6h18" />
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                        </svg>
+                                    </button>
                                 </div>
-                            </div>
-                        </td>
-                        <td><span class="status-badge published">Published</span></td>
-                        <td style="color: var(--admin-text-muted); font-size: 14px;">25 Nov 2024</td>
-                        <td>
-                            <div class="action-btns">
-                                <button type="button" class="action-btn edit" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                                        <path d="m15 5 4 4"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="action-btn delete" title="Delete">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 6h18"/>
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="blog-info">
-                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
-                                <div>
-                                    <div class="blog-title">Clean Architecture with .NET</div>
-                                    <div class="blog-excerpt">Implementing Clean Architecture in enterprise projects...</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="status-badge draft">Draft</span></td>
-                        <td style="color: var(--admin-text-muted); font-size: 14px;">20 Nov 2024</td>
-                        <td>
-                            <div class="action-btns">
-                                <button type="button" class="action-btn edit" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                                        <path d="m15 5 4 4"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="action-btn delete" title="Delete">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 6h18"/>
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="blog-info">
-                                <img src="/images/blog-placeholder.jpg" alt="" class="blog-thumbnail">
-                                <div>
-                                    <div class="blog-title">CQRS and MediatR in Practice</div>
-                                    <div class="blog-excerpt">How to implement the CQRS pattern using MediatR in .NET...</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="status-badge draft">Draft</span></td>
-                        <td style="color: var(--admin-text-muted); font-size: 14px;">15 Nov 2024</td>
-                        <td>
-                            <div class="action-btns">
-                                <button type="button" class="action-btn edit" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                                        <path d="m15 5 4 4"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="action-btn delete" title="Delete">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 6h18"/>
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -206,7 +124,7 @@
         </div>
         <div class="card-body">
             <div class="quick-actions">
-                <a href="/admin/post/newpost" class="quick-action-item">
+                <a asp-action="NewPost" asp-controller="Posts" asp-area="admin" class="quick-action-item">
                     <div class="quick-action-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>

@@ -8,11 +8,12 @@ namespace dbs.infra.Context
 {
     public class BlogContext : DbContext, IUnitOfWork
     {
-        public BlogContext(DbContextOptions<DbContext> options) : base(options)
+        public BlogContext(DbContextOptions<BlogContext> options) : base(options)
         {
         }
 
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<ConfigurationKey> ConfigurationKeys { get; set; }

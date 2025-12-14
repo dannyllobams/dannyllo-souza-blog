@@ -2,20 +2,26 @@
 
 namespace dbs.core.Messages
 {
-    public class QueryResult<T> where T : class
+    public class QueryResult<T>
     {
-        public T? Resultado { get; private set; }
+        public T? Response { get; private set; }
         public ValidationResult ValidationResult { get; private set; }
 
-        public QueryResult(T resultado, ValidationResult validationResult)
+        protected QueryResult(T response, ValidationResult validationResult) 
         {
-            this.Resultado = resultado;
-            this.ValidationResult = validationResult;
+            Response = response;
+            ValidationResult = validationResult;
         }
 
         public QueryResult(ValidationResult validationResult)
         {
             this.ValidationResult = validationResult;
+        }
+
+        public static QueryResult<T> Success(T response, ValidationResult validationResult)
+        {
+            var queryResult = new QueryResult<T>(response, validationResult);
+            return queryResult;
         }
     }
 }

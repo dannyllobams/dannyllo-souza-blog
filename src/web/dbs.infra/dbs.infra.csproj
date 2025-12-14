@@ -7,9 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFrameworkCore.Extensions" Version="5.0.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.22" />
+	<PackageReference Include="EntityFrameworkCore.Extensions" Version="5.0.0" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.22" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
   </ItemGroup>
 
   <ItemGroup>
