@@ -20,6 +20,9 @@ namespace dbs.infra.Mappings
                 .IsRequired()
                 .HasColumnType("varchar(200)");
 
+            builder.HasIndex(p => p.UrlSlug)
+                .IsUnique();
+
             builder.Property(p => p.UrlMainImage)
                 .IsRequired()
                 .HasColumnType("varchar(200)");
@@ -48,11 +51,43 @@ namespace dbs.infra.Mappings
 
             builder.HasMany(p => p.Categories)
                 .WithMany(c => c.Posts)
-                .UsingEntity(j => j.ToTable("PostCategories"));
+                .UsingEntity<Dictionary<string, object>>(
+                    "PostCategories",
+                    j => j
+                        .HasOne<Category>()
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j
+                        .HasOne<Post>()
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                     j =>
+                     {
+                         j.HasKey("PostId", "CategoryId");
+                     }
+                );
 
             builder.HasMany(p => p.Tags)
                 .WithMany(t => t.Posts)
-                .UsingEntity(j => j.ToTable("PostTags"));
+                .UsingEntity<Dictionary<string, object>>(
+                    "PostTags",
+                    j => j
+                        .HasOne<Tag>()
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j
+                        .HasOne<Post>()
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                     j =>
+                     {
+                         j.HasKey("PostId", "TagId");
+                     }
+                );
 
             builder.HasMany(p => p.Comments)
                 .WithOne() 

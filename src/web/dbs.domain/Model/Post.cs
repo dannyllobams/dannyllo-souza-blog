@@ -11,7 +11,7 @@ namespace dbs.domain.Model
         public string Content { get; set; } = string.Empty;
         public string Summary { get; set; } = string.Empty;
         public PostStatus Status { get; set; } = PostStatus.DRAFT;
-        public SEO SEO { get; set; } = new SEO(string.Empty, string.Empty); 
+        public SEO? SEO { get; set; } = new SEO(string.Empty, string.Empty); 
 
         private List<Category> _categories = new();
         private List<Tag> _tags = new();

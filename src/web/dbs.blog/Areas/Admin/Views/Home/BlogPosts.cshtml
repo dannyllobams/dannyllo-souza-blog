@@ -1,0 +1,10 @@
+@using dbs.blog.DTOs
+@model IEnumerable<PostListItemDTO>
+
+@{
+    ViewData["Title"] = "All Posts";
+    ViewData["Breadcrumb"] = "Posts";
+}
+
+<partial name="~/Areas/Admin/Views/Posts/_PostList.cshtml" model="Model" />
+

@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Admin Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/styles/admin.css" asp-append-version="true">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; }
@@ -40,7 +41,7 @@
                 <!-- Content Section -->
                 <div class="nav-section">
                     <div class="nav-section-title">Content</div>
-                    <a href="/admin/posts" class="nav-item">
+                    <a asp-action="BlogPosts" asp-controller="Home" asp-area="Admin" class="nav-item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
                             <path d="M18 14h-8"/>

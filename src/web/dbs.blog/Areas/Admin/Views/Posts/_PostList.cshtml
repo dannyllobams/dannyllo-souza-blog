@@ -1,0 +1,392 @@
+﻿@using dbs.blog.DTOs
+@model IEnumerable<PostListItemDTO>
+
+@{
+    ViewData["Title"] = "Posts";
+    ViewData["Breadcrumb"] = "Posts";
+    
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var totalPages = ViewBag.TotalPages ?? 1;
+    var totalItems = ViewBag.TotalItems ?? 0;
+    var pageSize = ViewBag.PageSize ?? 10;
+}
+
+<div class="content-card">
+    <div class="card-header">
+        <h2 class="card-title">All Posts</h2>
+        <a asp-action="NewPost" asp-controller="Posts" asp-area="admin" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/>
+                <path d="M12 5v14"/>
+            </svg>
+            New Post
+        </a>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        <table class="blog-table">
+            <thead>
+                <tr>
+                    <th>Post</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach(var post in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="blog-info">
+                                    <img src="@post.MainImageUrl" alt="" class="blog-thumbnail">
+                                    <div>
+                                        <div class="blog-title">@post.Title</div>
+                                        <div class="blog-excerpt">@post.GetShorSummary()</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge @(Enum.GetName(post.Status)!.ToLower())" style="text-transform: capitalize;">@(Enum.GetName(post.Status)!)</span>
+                            </td>
+                            <td style="color: var(--admin-text-muted); font-size: 14px;">@post.Date.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <div class="action-btns">
+                                    <a asp-action="EditPost" asp-controller="Posts" asp-area="admin" asp-route-url="@post.Url" class="action-btn edit" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                            <path d="m15 5 4 4" />
+                                        </svg>
+                                    </a>
+                                    @if (post.Status == dbs.domain.Basics.Enum.PostStatus.DRAFT)
+                                    {
+                                        <button type="button" class="action-btn delete" title="Delete" data-post-id="@post.Id" data-post-title="@post.Title">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                            </svg>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                            No posts found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    @if (totalPages > 1)
+    {
+        <div class="card-footer" style="padding: 20px; border-top: 1px solid var(--admin-border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div style="color: var(--admin-text-muted); font-size: 14px;">
+                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, totalItems)) of @totalItems posts
+                </div>
+                
+                <div class="pagination">
+                    @if (currentPage > 1)
+                    {
+                        <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@(currentPage - 1)" class="pagination-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6"/>
+                            </svg>
+                            Previous
+                        </a>
+                    }
+                    
+                    <div class="pagination-numbers">
+                        @{
+                            var startPage = Math.Max(1, currentPage - 2);
+                            var endPage = Math.Min(totalPages, currentPage + 2);
+                            
+                            if (startPage > 1)
+                            {
+                                <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="1" class="pagination-number">1</a>
+                                @if (startPage > 2)
+                                {
+                                    <span class="pagination-ellipsis">...</span>
+                                }
+                            }
+                            
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                @if (i == currentPage)
+                                {
+                                    <span class="pagination-number active">@i</span>
+                                }
+                                else
+                                {
+                                    <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@i" class="pagination-number">@i</a>
+                                }
+                            }
+                            
+                            if (endPage < totalPages)
+                            {
+                                @if (endPage < totalPages - 1)
+                                {
+                                    <span class="pagination-ellipsis">...</span>
+                                }
+                                <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@totalPages" class="pagination-number">@totalPages</a>
+                            }
+                        }
+                    </div>
+                    
+                    @if (currentPage < totalPages)
+                    {
+                        <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@(currentPage + 1)" class="pagination-btn">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6"/>
+                            </svg>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .pagination {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .pagination-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--admin-border);
+        border-radius: var(--admin-radius);
+        color: var(--admin-text);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: var(--admin-transition);
+    }
+    
+    .pagination-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--admin-primary);
+        color: var(--admin-primary);
+    }
+    
+    .pagination-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .pagination-numbers {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .pagination-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 0 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--admin-border);
+        border-radius: var(--admin-radius);
+        color: var(--admin-text);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: var(--admin-transition);
+    }
+    
+    .pagination-number:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--admin-primary);
+        color: var(--admin-primary);
+    }
+    
+    .pagination-number.active {
+        background: var(--admin-primary-gradient);
+        border-color: var(--admin-primary);
+        color: var(--admin-text);
+        cursor: default;
+    }
+    
+    .pagination-number.active:hover {
+        background: var(--admin-primary-gradient);
+        color: var(--admin-text);
+    }
+    
+    .pagination-ellipsis {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        color: var(--admin-text-muted);
+        font-size: 14px;
+    }
+    
+    .card-footer {
+        margin-top: 0;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.action-btn.delete[data-post-id]');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.getAttribute('data-post-id');
+                const postTitle = this.getAttribute('data-post-title') || 'this post';
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Do you want to delete "${postTitle}"? This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    background: '#1e1e1e',
+                    color: '#ffffff',
+                    customClass: {
+                        popup: 'swal-dark',
+                        confirmButton: 'swal-confirm',
+                        cancelButton: 'swal-cancel'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deletePost(postId, button);
+                    }
+                });
+            });
+        });
+        
+        function deletePost(postId, buttonElement) {
+            // Disable button during request
+            buttonElement.disabled = true;
+            buttonElement.style.opacity = '0.5';
+            buttonElement.style.cursor = 'not-allowed';
+            
+            fetch(`@Url.Action("DeletePost", "Posts", new { area = "admin" })?postId=${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(async response => {
+                if (response.ok) {
+                    return {};
+                } else {
+                    const text = await response.text();
+                    let errorMessage = 'Failed to delete post';
+                    try {
+                        const data = text ? JSON.parse(text) : null;
+                        if (Array.isArray(data)) {
+                            errorMessage = data.join(', ');
+                        } else if (data && typeof data === 'string') {
+                            errorMessage = data;
+                        } else if (data && data.message) {
+                            errorMessage = data.message;
+                        }
+                    } catch {
+                        errorMessage = text || 'Failed to delete post';
+                    }
+                    throw new Error(errorMessage);
+                }
+            })
+            .then(() => {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'The post has been deleted successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#7c3aed',
+                    background: '#1e1e1e',
+                    color: '#ffffff',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Remove the row from the table
+                    const row = buttonElement.closest('tr');
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            // Check if table is empty
+                            const tbody = row.closest('tbody');
+                            if (tbody && tbody.children.length === 0) {
+                                tbody.innerHTML = `
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                                            No posts found.
+                                        </td>
+                                    </tr>
+                                `;
+                            }
+                        }, 300);
+                    } else {
+                        // If row not found, reload the page
+                        window.location.reload();
+                    }
+                });
+            })
+            .catch(error => {
+                buttonElement.disabled = false;
+                buttonElement.style.opacity = '1';
+                buttonElement.style.cursor = 'pointer';
+                
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'An error occurred while deleting the post.',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                    background: '#1e1e1e',
+                    color: '#ffffff'
+                });
+            });
+        }
+        
+    });
+</script>
+
+<style>
+    .swal-dark {
+        background: #1e1e1e !important;
+        border: 1px solid #2a2a2a !important;
+    }
+    
+    .swal-confirm {
+        background: #ef4444 !important;
+    }
+    
+    .swal-confirm:hover {
+        background: #dc2626 !important;
+    }
+    
+    .swal-cancel {
+        background: #6b7280 !important;
+    }
+    
+    .swal-cancel:hover {
+        background: #4b5563 !important;
+    }
+</style>

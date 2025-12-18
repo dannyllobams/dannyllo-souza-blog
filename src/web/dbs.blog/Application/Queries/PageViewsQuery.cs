@@ -7,7 +7,7 @@ namespace dbs.blog.Application.Queries
     {
         public Guid? PostId { get; set;  }
 
-        public override bool EhValido()
+        public override bool IsValid()
         {
             ValidationResult = new FluentValidation.Results.ValidationResult();
             return ValidationResult.IsValid;

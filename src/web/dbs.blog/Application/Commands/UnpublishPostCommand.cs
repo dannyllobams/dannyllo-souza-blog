@@ -7,7 +7,7 @@ namespace dbs.blog.Application.Commands
     {
         public Guid PostId { get; set; }
 
-        public override bool EhValido()
+        public override bool IsValid()
         {
             ValidationResult = new UnpublishPostCommandValidator().Validate(this);
             return ValidationResult.IsValid;

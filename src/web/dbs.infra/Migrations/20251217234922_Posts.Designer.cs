@@ -12,8 +12,8 @@ using dbs.infra.Context;
 namespace dbs.infra.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    [Migration("20251214205049_Post")]
-    partial class Post
+    [Migration("20251217234922_Posts")]
+    partial class Posts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,34 +25,34 @@ namespace dbs.infra.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CategoryPost", b =>
+            modelBuilder.Entity("PostCategories", b =>
                 {
-                    b.Property<Guid>("CategoriesId")
+                    b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PostsId")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("CategoriesId", "PostsId");
+                    b.HasKey("PostId", "CategoryId");
 
-                    b.HasIndex("PostsId");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("PostCategories", (string)null);
+                    b.ToTable("PostCategories");
                 });
 
-            modelBuilder.Entity("PostTag", b =>
+            modelBuilder.Entity("PostTags", b =>
                 {
-                    b.Property<Guid>("PostsId")
+                    b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TagsId")
+                    b.Property<Guid>("TagId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("PostsId", "TagsId");
+                    b.HasKey("PostId", "TagId");
 
-                    b.HasIndex("TagsId");
+                    b.HasIndex("TagId");
 
-                    b.ToTable("PostTags", (string)null);
+                    b.ToTable("PostTags");
                 });
 
             modelBuilder.Entity("dbs.domain.Model.Category", b =>
@@ -171,6 +171,9 @@ namespace dbs.infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UrlSlug")
+                        .IsUnique();
+
                     b.ToTable("Posts", (string)null);
                 });
 
@@ -195,29 +198,33 @@ namespace dbs.infra.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("CategoryPost", b =>
+            modelBuilder.Entity("PostCategories", b =>
                 {
                     b.HasOne("dbs.domain.Model.Category", null)
                         .WithMany()
-                        .HasForeignKey("CategoriesId")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("dbs.domain.Model.Post", null)
                         .WithMany()
-                        .HasForeignKey("PostsId")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PostTag", b =>
+            modelBuilder.Entity("PostTags", b =>
                 {
                     b.HasOne("dbs.domain.Model.Post", null)
                         .WithMany()
-                        .HasForeignKey("PostsId")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("dbs.domain.Model.Tag", null)
                         .WithMany()
-                        .HasForeignKey("TagsId")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -257,8 +264,7 @@ namespace dbs.infra.Migrations
                                 .HasForeignKey("PostId");
                         });
 
-                    b.Navigation("SEO")
-                        .IsRequired();
+                    b.Navigation("SEO");
                 });
 
             modelBuilder.Entity("dbs.domain.Model.Comment", b =>

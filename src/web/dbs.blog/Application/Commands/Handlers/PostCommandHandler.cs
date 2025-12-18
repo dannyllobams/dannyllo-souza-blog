@@ -22,7 +22,7 @@ namespace dbs.blog.Application.Commands.Handlers
 
         public async Task<AddPostCommand.Result> Handle(AddPostCommand command, CancellationToken cancellationToken)
         {
-            if (!command.EhValido())
+            if (!command.IsValid())
             {
                 return new AddPostCommand.Result(command.ValidationResult);
             }
@@ -37,7 +37,7 @@ namespace dbs.blog.Application.Commands.Handlers
 
         public async Task<ValidationResult> Handle(UpdatePostCommand command, CancellationToken cancellationToken)
         {
-            if (!command.EhValido())
+            if (!command.IsValid())
             {
                 return command.ValidationResult;
             }
@@ -61,8 +61,8 @@ namespace dbs.blog.Application.Commands.Handlers
             post.UrlMainImage = command.UrlMainImage;
             post.Content = command.Content;
             post.Summary = command.Summary;
-            post.SEO.MetaTitle   = command.SEO.MetaTitle;
-            post.SEO.MetaDescription   = command.SEO.MetaDescription;
+            post.SEO!.MetaTitle   = command.SEO.MetaTitle;
+            post.SEO!.MetaDescription   = command.SEO.MetaDescription;
             post.Status = PostStatus.DRAFT;
 
             var categoriesToBeAdded = command.Categories
@@ -87,16 +87,9 @@ namespace dbs.blog.Application.Commands.Handlers
                 post.AddCategory(category);
             }
 
-            foreach(var category in categoriesToBeRemoved)
+            foreach (var category in categoriesToBeRemoved)
             {
                 post.RemoveCategory(category);
-
-                var isCategoryUsed = await _postsRepository.IsCategoryUsedAsync(category.Name);
-
-                if(!isCategoryUsed)
-                {
-                    _postsRepository.RemoveCategory(category);
-                }
             }
 
             foreach (var tagName in tagsToBeAdded)
@@ -105,15 +98,9 @@ namespace dbs.blog.Application.Commands.Handlers
                 post.AddTag(tag);
             }
 
-            foreach(var tag in tagsToBeRemoved)
+            foreach (var tag in tagsToBeRemoved)
             {
                 post.RemoveTag(tag);
-
-                var isTagUsed = await _postsRepository.IsTagUsedAsync(tag.Name);
-                if(!isTagUsed)
-                {
-                    _postsRepository.RemoveTag(tag);
-                }
             }
 
             _postsRepository.Update(post);
@@ -124,7 +111,7 @@ namespace dbs.blog.Application.Commands.Handlers
 
         public async Task<ValidationResult> Handle(DeletePostCommand command, CancellationToken cancellationToken)
         {
-            if(!command.EhValido())
+            if(!command.IsValid())
             {
                 return command.ValidationResult;
             }
@@ -134,6 +121,12 @@ namespace dbs.blog.Application.Commands.Handlers
             if(post == null)
             {
                 AddError("Post not found.");
+                return ValidationResult;
+            }
+
+            if(post.Status != PostStatus.DRAFT)
+            {
+                AddError("Only draft posts can be deleted.");
                 return ValidationResult;
             }
 
@@ -171,7 +164,7 @@ namespace dbs.blog.Application.Commands.Handlers
 
         public async Task<ValidationResult> Handle(PublishPostCommand command, CancellationToken cancellationToken)
         {
-            if(!command.EhValido())
+            if(!command.IsValid())
             {
                 return command.ValidationResult;
             }
@@ -194,7 +187,7 @@ namespace dbs.blog.Application.Commands.Handlers
 
         public async Task<ValidationResult> Handle(UnpublishPostCommand command, CancellationToken cancellationToken)
         {
-            if (!command.EhValido())
+            if (!command.IsValid())
             {
                 return command.ValidationResult;
             }
@@ -219,7 +212,10 @@ namespace dbs.blog.Application.Commands.Handlers
         {
             var category = await _postsRepository.GetCategoryByNameAsync(categoryName);
             if (category == null)
+            {
                 category = new Category(categoryName);
+                await _postsRepository.AddCategoryAsync(category);
+            }
 
             return category;
         }
@@ -228,7 +224,10 @@ namespace dbs.blog.Application.Commands.Handlers
         {
             var tag = await _postsRepository.GetTagByNameAsync(tagName);
             if (tag == null)
+            {
                 tag = new Tag(tagName);
+                await _postsRepository.AddTagAsync(tag);
+            }
 
             return tag;
         }

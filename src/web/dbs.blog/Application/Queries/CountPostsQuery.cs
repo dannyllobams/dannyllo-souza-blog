@@ -6,7 +6,7 @@ namespace dbs.blog.Application.Queries
 {
     public class CountPostsQuery : Query<int>
     {
-        public override bool EhValido()
+        public override bool IsValid()
         {
             ValidationResult = new ValidationResult();
             return ValidationResult.IsValid;

@@ -5,6 +5,7 @@ namespace dbs.blog.DTOs
 {
     public class PostDTO
     {
+        public Guid Id { get; set; }
         public string Title { get; private set; } = string.Empty;
         public string UrlSlug { get; private set; } = string.Empty;
         public string UrlMainImage { get; private set; } = string.Empty;
@@ -21,6 +22,7 @@ namespace dbs.blog.DTOs
         {
             return new PostDTO
             {
+                Id = post.Id,
                 Title = post.Title,
                 UrlSlug = post.UrlSlug,
                 UrlMainImage = post.UrlMainImage,

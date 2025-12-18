@@ -55,67 +55,7 @@
 <!-- Dashboard Grid -->
 <div class="dashboard-grid">
     <!-- Recent Posts -->
-    <div class="content-card">
-        <div class="card-header">
-            <h2 class="card-title">Recent Posts</h2>
-            <a asp-action="NewPost" asp-controller="Posts" asp-area="admin" class="btn btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M5 12h14"/>
-                    <path d="M12 5v14"/>
-                </svg>
-                New Post
-            </a>
-        </div>
-        <div class="card-body" style="padding: 0;">
-            <table class="blog-table">
-                <thead>
-                    <tr>
-                        <th>Post</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var post in Model.Posts)
-                    {
-                        <tr>
-                            <td>
-                                <div class="blog-info">
-                                    <img src="@post.MainImageUrl" alt="" class="blog-thumbnail">
-                                    <div>
-                                        <div class="blog-title">@post.Title</div>
-                                        <div class="blog-excerpt">@post.GetShorSummary()</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="status-badge @(Enum.GetName(post.Status)!.ToLower())" style="text-transform: capitalize;">@(Enum.GetName(post.Status)!)</span>
-                            </td>
-                            <td style="color: var(--admin-text-muted); font-size: 14px;">@post.Date.ToString("dd MMM yyyy")</td>
-                            <td>
-                                <div class="action-btns">
-                                    <button type="button" class="action-btn edit" title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                            <path d="m15 5 4 4" />
-                                        </svg>
-                                    </button>
-                                    <button type="button" class="action-btn delete" title="Delete">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M3 6h18" />
-                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <partial name="~/Areas/Admin/Views/Posts/_PostList.cshtml" model="Model.Posts" />
     
     <!-- Quick Actions -->
     <div class="content-card">

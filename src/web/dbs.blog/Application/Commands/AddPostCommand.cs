@@ -35,7 +35,7 @@ namespace dbs.blog.Application.Commands
         public List<string> Tags { get; set; } = new List<string>();
         public List<string> Categories { get; set; } = new List<string>();
 
-        public override bool EhValido()
+        public override bool IsValid()
         {
             this.ValidationResult = new AddPostCommandValidator().Validate(this);
             return this.ValidationResult.IsValid;

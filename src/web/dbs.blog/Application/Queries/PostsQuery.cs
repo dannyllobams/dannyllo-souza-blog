@@ -12,7 +12,7 @@ namespace dbs.blog.Application.Queries
         public int PageNumber { get; set; } = 1;
         public bool PublishedOnly { get; set; } = true;
 
-        public override bool EhValido()
+        public override bool IsValid()
         {
             ValidationResult = new PostsQueryValidator().Validate(this);
             return ValidationResult.IsValid;
@@ -41,7 +41,14 @@ namespace dbs.blog.Application.Queries
 
         public async Task<QueryResult<IEnumerable<PostListItemDTO>>> Handle(PostsQuery query, CancellationToken cancellationToken)
         {
-            var posts = await _postsRepository.GetAllAsync(query.PageNumber, PAGESIZE);
+            if(!query.IsValid())
+            {
+                return new QueryResult<IEnumerable<PostListItemDTO>>(query.ValidationResult);
+            }
+
+            var posts = query.PublishedOnly ? 
+                await _postsRepository.GetAllPublishedsAsync(query.PageNumber, PAGESIZE) : 
+                await _postsRepository.GetAllAsync(query.PageNumber, PAGESIZE);
 
             return Response(posts.Select(PostListItemDTO.ToPostListItemDTO));
         }

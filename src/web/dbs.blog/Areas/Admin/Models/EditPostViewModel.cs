@@ -1,9 +1,13 @@
+using dbs.blog.DTOs;
+using dbs.domain.Basics.Enum;
 using System.ComponentModel.DataAnnotations;
 
 namespace dbs.blog.Models
 {
-    public class AddPostViewModel
+    public class EditPostViewModel
     {
+        public Guid Id { get; set; }
+
         [Display(Name = "Title")]
         [Required(ErrorMessage = "{0} is required")]
         public string Title { get; set; } = string.Empty;
@@ -32,11 +36,32 @@ namespace dbs.blog.Models
         [Required(ErrorMessage = "{0} is required")]
         public string UrlMainImage { get; set; } = string.Empty;
 
+        public PostStatus Status { get; set; } = PostStatus.DRAFT;
+
         [Required(ErrorMessage = "{0} is required")]
-        public string Category { get; set; } = string.Empty;
+        public List<string> Categories { get; set; } = new();
 
         [Display(Name = "Tags")]
         [Required(ErrorMessage = "{0} is required")]
         public List<string> Tags { get; set; } = new();
+
+        public static EditPostViewModel FromPostDTO(PostDTO post)
+        {
+            return new EditPostViewModel
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Slug = post.UrlSlug,
+                Content = post.Content,
+                Excerpt = post.Summary,
+                MetaTitle = post.SEO.MetaTitle,
+                MetaDescription = post.SEO.MetaDescription,
+                UrlMainImage = post.UrlMainImage,
+                Status = post.Status,
+                Categories = post.Categories.ToList(),
+                Tags = post.Tags.ToList()
+            };
+
+        }
     }
 }

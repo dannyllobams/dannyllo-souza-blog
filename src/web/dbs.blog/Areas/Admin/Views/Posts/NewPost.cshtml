@@ -1,10 +1,15 @@
+@using dbs.blog.Areas.Admin.Models
 @using dbs.blog.Models
+@using System.Collections.Generic
+@using dbs.domain.Basics.Enum
 
 @model AddPostViewModel
 
 @{
-    ViewData["Title"] = "New Post";
-    ViewData["Breadcrumb"] = "New Post";
+    ViewData["Title"] = "Edit Post";
+    ViewData["Breadcrumb"] = "Edit Post";
+
+    var categories = (List<string>)ViewBag.Categories;
 }
 
 @section Styles {
@@ -18,36 +23,19 @@
         <div class="editor-header-left">
             <a asp-action="Index" asp-controller="Home" asp-area="admin" class="btn btn-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m12 19-7-7 7-7"/>
-                    <path d="M19 12H5"/>
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
                 </svg>
                 Back
             </a>
         </div>
         <div class="editor-header-right">
-@*             <button type="button" class="btn btn-secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                </svg>
-                Preview
-            </button> *@
             <button type="button" class="btn btn-secondary" id="btnSaveDraft">
                 Save Draft
             </button>
-@*             <button type="button" class="btn btn-primary" id="btnPublish">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 17V3"/>
-                    <path d="m6 11 6 6 6-6"/>
-                    <path d="M19 21H5"/>
-                </svg>
-                Publish
-            </button> *@
         </div>
     </div>
-    
-    <form id="postForm" class="post-form">
-
+    <form id="postForm" class="post-form" asp-controller="Posts" asp-action="NewPost">
         <div asp-validation-summary="All" class="validation-summary" style="margin: 1rem; color: red; font-size: 0.725rem;"></div>
 
         <div class="post-form-grid">
@@ -55,18 +43,19 @@
             <div class="post-main">
                 <!-- Title -->
                 <div class="form-group">
-                    <input type="text" id="postTitle" name="title" class="form-input post-title-input" placeholder="Enter post title..." required>
+                    <input type="text" asp-for="Title" class="form-input post-title-input" placeholder="Enter post title..." required>
                 </div>
-                
+
+
                 <!-- Slug -->
                 <div class="form-group slug-group">
                     <label class="form-label">Post URL</label>
                     <div class="slug-input-wrapper">
                         <span class="slug-prefix">/blog/</span>
-                        <input type="text" id="postSlug" name="slug" class="form-input slug-input" placeholder="post-url-slug">
+                        <input type="text" asp-for="Slug" class="form-input slug-input" placeholder="post-url-slug">
                     </div>
                 </div>
-                
+
                 <!-- Tiptap Editor -->
                 <div class="form-group">
                     <label class="form-label">Content</label>
@@ -78,156 +67,127 @@
                                 <button type="button" class="toolbar-btn" data-action="heading" data-level="2" title="Heading 2">H2</button>
                                 <button type="button" class="toolbar-btn" data-action="heading" data-level="3" title="Heading 3">H3</button>
                             </div>
-                            
+
                             <span class="toolbar-divider"></span>
-                            
+
                             <div class="toolbar-group">
                                 <button type="button" class="toolbar-btn" data-action="bold" title="Bold">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" /><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="italic" title="Italic">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" x2="10" y1="4" y2="4" /><line x1="14" x2="5" y1="20" y2="20" /><line x1="15" x2="9" y1="4" y2="20" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="strike" title="Strikethrough">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4H9a3 3 0 0 0-2.83 4"/><path d="M14 12a4 4 0 0 1 0 8H6"/><line x1="4" x2="20" y1="12" y2="12"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4H9a3 3 0 0 0-2.83 4" /><path d="M14 12a4 4 0 0 1 0 8H6" /><line x1="4" x2="20" y1="12" y2="12" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="code" title="Inline Code">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>
                                 </button>
                             </div>
-                            
+
                             <span class="toolbar-divider"></span>
-                            
+
                             <div class="toolbar-group">
                                 <button type="button" class="toolbar-btn" data-action="bulletList" title="Bullet List">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" x2="21" y1="6" y2="6" /><line x1="8" x2="21" y1="12" y2="12" /><line x1="8" x2="21" y1="18" y2="18" /><line x1="3" x2="3.01" y1="6" y2="6" /><line x1="3" x2="3.01" y1="12" y2="12" /><line x1="3" x2="3.01" y1="18" y2="18" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="orderedList" title="Numbered List">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" x2="21" y1="6" y2="6"/><line x1="10" x2="21" y1="12" y2="12"/><line x1="10" x2="21" y1="18" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" x2="21" y1="6" y2="6" /><line x1="10" x2="21" y1="12" y2="12" /><line x1="10" x2="21" y1="18" y2="18" /><path d="M4 6h1v4" /><path d="M4 10h2" /><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" /></svg>
                                 </button>
                             </div>
-                            
+
                             <span class="toolbar-divider"></span>
-                            
+
                             <div class="toolbar-group">
                                 <button type="button" class="toolbar-btn" data-action="alignLeft" title="Align Left">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6"/><line x1="15" x2="3" y1="12" y2="12"/><line x1="17" x2="3" y1="18" y2="18"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6" /><line x1="15" x2="3" y1="12" y2="12" /><line x1="17" x2="3" y1="18" y2="18" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="alignCenter" title="Align Center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6"/><line x1="18" x2="6" y1="12" y2="12"/><line x1="21" x2="3" y1="18" y2="18"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6" /><line x1="18" x2="6" y1="12" y2="12" /><line x1="21" x2="3" y1="18" y2="18" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="alignRight" title="Align Right">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6"/><line x1="21" x2="9" y1="12" y2="12"/><line x1="21" x2="7" y1="18" y2="18"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6" /><line x1="21" x2="9" y1="12" y2="12" /><line x1="21" x2="7" y1="18" y2="18" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="alignJustify" title="Justify">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6"/><line x1="21" x2="3" y1="12" y2="12"/><line x1="21" x2="3" y1="18" y2="18"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="3" y1="6" y2="6" /><line x1="21" x2="3" y1="12" y2="12" /><line x1="21" x2="3" y1="18" y2="18" /></svg>
                                 </button>
                             </div>
-                            
+
                             <span class="toolbar-divider"></span>
-                            
+
                             <div class="toolbar-group">
                                 <button type="button" class="toolbar-btn" data-action="blockquote" title="Quote">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z" /><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="codeBlock" title="Code Block">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m10 10-2 2 2 2"/><path d="m14 14 2-2-2-2"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="m10 10-2 2 2 2" /><path d="m14 14 2-2-2-2" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="horizontalRule" title="Horizontal Line">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" x2="21" y1="12" y2="12"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" x2="21" y1="12" y2="12" /></svg>
                                 </button>
                             </div>
-                            
+
                             <span class="toolbar-divider"></span>
-                            
+
                             <div class="toolbar-group">
                                 <button type="button" class="toolbar-btn" data-action="link" title="Link">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="image" title="Insert Image">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                                 </button>
                             </div>
-                            
+
                             <span class="toolbar-divider"></span>
-                            
+
                             <div class="toolbar-group">
                                 <button type="button" class="toolbar-btn" data-action="undo" title="Undo">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6" /><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" /></svg>
                                 </button>
                                 <button type="button" class="toolbar-btn" data-action="redo" title="Redo">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6" /><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" /></svg>
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Editor Content -->
                         <div class="tiptap-content" id="tiptapEditor"></div>
-                        
+
                         <!-- Hidden textarea -->
                         <textarea id="editorContent" name="content" hidden></textarea>
                     </div>
                 </div>
-                
+
                 <!-- Excerpt -->
                 <div class="form-group">
                     <label class="form-label">Excerpt <span class="label-hint">(shown in listings)</span></label>
-                    <textarea id="postExcerpt" name="excerpt" class="form-input form-textarea" rows="3" placeholder="Enter a brief summary of the post..." maxlength="1000"></textarea>
+                    <textarea asp-for="Excerpt" class="form-input form-textarea" rows="3" placeholder="Enter a brief summary of the post..." maxlength="1000"></textarea>
                 </div>
             </div>
-            
+
             <!-- Sidebar -->
             <div class="post-sidebar">
-                <!-- Status Card -->
-                <div class="sidebar-card">
-                    <div class="sidebar-card-header">
-                        <h3 class="sidebar-card-title">Status</h3>
-                    </div>
-                    <div class="sidebar-card-body">
-                        <div class="status-info">
-                            <span class="status-badge draft">Draft</span>
-                        </div>
-                    </div>
-                </div>
-                
                 <!-- Category Card -->
                 <div class="sidebar-card">
                     <div class="sidebar-card-header">
                         <h3 class="sidebar-card-title">Category</h3>
                     </div>
                     <div class="sidebar-card-body">
-                        <div class="category-list">
-                            <label class="category-item">
-                                <input type="radio" name="category" value="dotnet">
-                                <span class="category-label">.NET</span>
-                            </label>
-                            <label class="category-item">
-                                <input type="radio" name="category" value="csharp">
-                                <span class="category-label">C#</span>
-                            </label>
-                            <label class="category-item">
-                                <input type="radio" name="category" value="aspnet">
-                                <span class="category-label">ASP.NET Core</span>
-                            </label>
-                            <label class="category-item">
-                                <input type="radio" name="category" value="architecture">
-                                <span class="category-label">Architecture</span>
-                            </label>
-                            <label class="category-item">
-                                <input type="radio" name="category" value="tutorial">
-                                <span class="category-label">Tutorial</span>
-                            </label>
+                        <div class="category-list" id="categoriesList">
+                            @foreach (var category in categories)
+                            {
+                                <label class="category-item">
+                                    <input type="radio" name="category" value="@category" @(Model.Category == category ? "checked" : "")>
+                                    <span class="category-label">@category</span>
+                                </label>
+                            }
                         </div>
-                        <button type="button" class="btn-add-category">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14"/>
-                                <path d="M12 5v14"/>
-                            </svg>
-                            Add Category
-                        </button>
+                        <div class="categories-input-wrapper">
+                            <input type="text" id="categoriesInput" class="form-input" placeholder="Add Category...">
+                        </div>
                     </div>
                 </div>
-                
+
                 <div class="sidebar-card">
                     <div class="sidebar-card-header">
                         <h3 class="sidebar-card-title">Tags</h3>
@@ -237,19 +197,18 @@
                             <input type="text" id="tagsInput" class="form-input" placeholder="Add tag...">
                         </div>
                         <div class="tags-list" id="tagsList">
-                            <span class="tag-item">
-                                C#
-                                <button type="button" class="tag-remove">&times;</button>
-                            </span>
-                            <span class="tag-item">
-                                ASP.NET
-                                <button type="button" class="tag-remove">&times;</button>
-                            </span>
+                            @foreach (var tag in Model.Tags)
+                            {
+                                <span class="tag-item">
+                                    @tag
+                                    <button type="button" class="tag-remove">&times;</button>
+                                </span>
+                            }
                         </div>
                         <p class="tags-hint">Press Enter to add</p>
                     </div>
                 </div>
-                
+
                 <div class="sidebar-card">
                     <div class="sidebar-card-header">
                         <h3 class="sidebar-card-title">Featured Image</h3>
@@ -257,36 +216,43 @@
                     <div class="sidebar-card-body">
                         <div class="featured-image-upload" id="featuredImageUpload">
                             <div class="upload-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-                                    <circle cx="9" cy="9" r="2"/>
-                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                                </svg>
-                                <p>Click or drag an image</p>
-                                <span>PNG, JPG up to 5MB</span>
+                                @if (string.IsNullOrEmpty(Model.UrlMainImage))
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                                        <circle cx="9" cy="9" r="2" />
+                                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                    </svg>
+                                    <p>Click or drag an image</p>
+                                    <span>PNG, JPG up to 5MB</span>
+                                }
+                                else
+                                {
+
+                                }
                             </div>
                             <input type="file" id="featuredImageInput" name="featuredImage" accept="image/*" hidden>
                             <input type="hidden" asp-for="UrlMainImage" id="UrlMainImage" />
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="sidebar-card">
                     <div class="sidebar-card-header" data-toggle="seoContent">
                         <h3 class="sidebar-card-title">SEO</h3>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
-                            <path d="m6 9 6 6 6-6"/>
+                            <path d="m6 9 6 6 6-6" />
                         </svg>
                     </div>
                     <div class="sidebar-card-body" id="seoContent">
                         <div class="form-group">
                             <label class="form-label">Meta Title</label>
-                            <input type="text" id="metaTitle" name="metaTitle" class="form-input" placeholder="SEO Title">
+                            <input type="text" asp-for="MetaTitle" class="form-input" placeholder="SEO Title">
                             <span class="char-counter">0/60</span>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Meta Description</label>
-                            <textarea id="metaDescription" name="metaDescription" class="form-input form-textarea" rows="3" placeholder="SEO Description"></textarea>
+                            <textarea asp-for="MetaDescription" class="form-input form-textarea" rows="3" placeholder="SEO Description"></textarea>
                             <span class="char-counter">0/160</span>
                         </div>
                     </div>
@@ -297,331 +263,354 @@
 </div>
 
 @section Scripts {
-<script type="module">
-    import { Editor } from 'https://esm.sh/@@tiptap/core@2.1.13'
-    import StarterKit from 'https://esm.sh/@@tiptap/starter-kit@2.1.13'
-    import Link from 'https://esm.sh/@@tiptap/extension-link@2.1.13'
-    import Placeholder from 'https://esm.sh/@@tiptap/extension-placeholder@2.1.13'
-    import Image from 'https://esm.sh/@@tiptap/extension-image@2.1.13'
-    import TextAlign from 'https://esm.sh/@@tiptap/extension-text-align@2.1.13'
+    <script type="module">
+        import { Editor } from 'https://esm.sh/@@tiptap/core@2.1.13'
+        import StarterKit from 'https://esm.sh/@@tiptap/starter-kit@2.1.13'
+        import Link from 'https://esm.sh/@@tiptap/extension-link@2.1.13'
+        import Placeholder from 'https://esm.sh/@@tiptap/extension-placeholder@2.1.13'
+        import Image from 'https://esm.sh/@@tiptap/extension-image@2.1.13'
+        import TextAlign from 'https://esm.sh/@@tiptap/extension-text-align@2.1.13'
 
-    const editor = new Editor({
-        element: document.querySelector('#tiptapEditor'),
-        extensions: [
-            StarterKit.configure({
-                heading: {
-                    levels: [1, 2, 3]
-                }
-            }),
-            Link.configure({
-                openOnClick: false,
-                HTMLAttributes: {
-                    target: '_blank',
-                    rel: 'noopener noreferrer'
-                }
-            }),
-            Placeholder.configure({
-                placeholder: 'Start writing your post here...'
-            }),
-            Image.configure({
-                inline: false,
-                allowBase64: true,
-                HTMLAttributes: {
-                    class: 'editor-image'
-                }
-            }),
-            TextAlign.configure({
-                types: ['heading', 'paragraph', 'image']
-            })
-        ],
-        content: '<p></p>',
-        editorProps: {
-            attributes: {
-                class: 'tiptap'
-            }
-        },
-        onUpdate: ({ editor }) => {
-            document.getElementById('editorContent').value = editor.getHTML();
-            updateToolbarState();
-        },
-        onSelectionUpdate: () => {
-            updateToolbarState();
-        }
-    });
-
-    document.querySelectorAll('.toolbar-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const action = btn.dataset.action;
-            const level = btn.dataset.level;
-            
-            switch(action) {
-                case 'bold':
-                    editor.chain().focus().toggleBold().run();
-                    break;
-                case 'italic':
-                    editor.chain().focus().toggleItalic().run();
-                    break;
-                case 'strike':
-                    editor.chain().focus().toggleStrike().run();
-                    break;
-                case 'code':
-                    editor.chain().focus().toggleCode().run();
-                    break;
-                case 'heading':
-                    editor.chain().focus().toggleHeading({ level: parseInt(level) }).run();
-                    break;
-                case 'bulletList':
-                    editor.chain().focus().toggleBulletList().run();
-                    break;
-                case 'orderedList':
-                    editor.chain().focus().toggleOrderedList().run();
-                    break;
-                case 'alignLeft':
-                    alignContent('left');
-                    break;
-                case 'alignCenter':
-                    alignContent('center');
-                    break;
-                case 'alignRight':
-                    alignContent('right');
-                    break;
-                case 'alignJustify':
-                    alignContent('justify');
-                    break;
-                case 'blockquote':
-                    editor.chain().focus().toggleBlockquote().run();
-                    break;
-                case 'codeBlock':
-                    editor.chain().focus().toggleCodeBlock().run();
-                    break;
-                case 'horizontalRule':
-                    editor.chain().focus().setHorizontalRule().run();
-                    break;
-                case 'link':
-                    const linkUrl = prompt('Enter URL:');
-                    if (linkUrl) {
-                        editor.chain().focus().setLink({ href: linkUrl }).run();
+        const editor = new Editor({
+            element: document.querySelector('#tiptapEditor'),
+            extensions: [
+                StarterKit.configure({
+                    heading: {
+                        levels: [1, 2, 3]
                     }
-                    break;
-                case 'image':
-                    const imageUrl = prompt('Enter image URL:');
-                    if (imageUrl) {
-                        editor.chain().focus().setImage({ src: imageUrl }).run();
+                }),
+                Link.configure({
+                    openOnClick: false,
+                    HTMLAttributes: {
+                        target: '_blank',
+                        rel: 'noopener noreferrer'
                     }
-                    break;
-                case 'undo':
-                    editor.chain().focus().undo().run();
-                    break;
-                case 'redo':
-                    editor.chain().focus().redo().run();
-                    break;
+                }),
+                Placeholder.configure({
+                    placeholder: 'Start writing your post here...'
+                }),
+                Image.configure({
+                    inline: false,
+                    allowBase64: true,
+                    HTMLAttributes: {
+                        class: 'editor-image'
+                    }
+                }),
+                TextAlign.configure({
+                    types: ['heading', 'paragraph', 'image']
+                })
+            ],
+            content: @(Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Content ?? ""))),
+            editorProps: {
+                attributes: {
+                    class: 'tiptap'
+                }
+            },
+            onUpdate: ({ editor }) => {
+                document.getElementById('editorContent').value = editor.getHTML();
+                updateToolbarState();
+            },
+            onSelectionUpdate: () => {
+                updateToolbarState();
             }
         });
-    });
 
-    function alignContent(alignment) {
-        const selectedImage = document.querySelector('#tiptapEditor .ProseMirror-selectednode');
-        
-        if (selectedImage && selectedImage.tagName === 'IMG') {
-            selectedImage.classList.remove('align-left', 'align-center', 'align-right');
-            selectedImage.classList.add('align-' + alignment);
-            document.getElementById('editorContent').value = editor.getHTML();
-        } else {
-            editor.chain().focus().setTextAlign(alignment).run();
-        }
-    }
-
-    function updateToolbarState() {
         document.querySelectorAll('.toolbar-btn').forEach(btn => {
-            const action = btn.dataset.action;
-            const level = btn.dataset.level;
-            
-            let isActive = false;
-            
-            switch(action) {
-                case 'bold':
-                    isActive = editor.isActive('bold');
-                    break;
-                case 'italic':
-                    isActive = editor.isActive('italic');
-                    break;
-                case 'strike':
-                    isActive = editor.isActive('strike');
-                    break;
-                case 'code':
-                    isActive = editor.isActive('code');
-                    break;
-                case 'heading':
-                    isActive = editor.isActive('heading', { level: parseInt(level) });
-                    break;
-                case 'bulletList':
-                    isActive = editor.isActive('bulletList');
-                    break;
-                case 'orderedList':
-                    isActive = editor.isActive('orderedList');
-                    break;
-                case 'alignLeft':
-                    isActive = editor.isActive({ textAlign: 'left' });
-                    break;
-                case 'alignCenter':
-                    isActive = editor.isActive({ textAlign: 'center' });
-                    break;
-                case 'alignRight':
-                    isActive = editor.isActive({ textAlign: 'right' });
-                    break;
-                case 'alignJustify':
-                    isActive = editor.isActive({ textAlign: 'justify' });
-                    break;
-                case 'blockquote':
-                    isActive = editor.isActive('blockquote');
-                    break;
-                case 'codeBlock':
-                    isActive = editor.isActive('codeBlock');
-                    break;
-                case 'link':
-                    isActive = editor.isActive('link');
-                    break;
-            }
-            
-            btn.classList.toggle('is-active', isActive);
-        });
-        
-        document.querySelector('[data-action="undo"]').disabled = !editor.can().undo();
-        document.querySelector('[data-action="redo"]').disabled = !editor.can().redo();
-    }
+            btn.addEventListener('click', () => {
+                const action = btn.dataset.action;
+                const level = btn.dataset.level;
 
-    window.tiptapEditor = editor;
-
-    const titleInput = document.getElementById('postTitle');
-    const slugInput = document.getElementById('postSlug');
-
-    titleInput.addEventListener('input', function() {
-        const slug = this.value
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
-        slugInput.value = slug;
-    });
-
-    const uploadArea = document.getElementById('featuredImageUpload');
-    const fileInput = document.getElementById('featuredImageInput');
-
-    uploadArea.addEventListener('click', () => fileInput.click());
-
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.style.borderColor = 'var(--admin-primary)';
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.style.borderColor = 'var(--admin-border)';
-    });
-
-    fileInput.addEventListener('change', async function() {
-        if (this.files && this.files[0]) {
-            const formData = new FormData();
-            formData.append('file', this.files[0]);
-
-            const placeholder = uploadArea.querySelector('.upload-placeholder');
-            const originalContent = placeholder.innerHTML;
-            placeholder.innerHTML = '<div class="spinner">Uploading...</div>';
-
-            try {
-                const response = await fetch('/Admin/Posts/UploadImage', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    document.getElementById('UrlMainImage').value = data.url;
-
-                    placeholder.innerHTML = `<img src="${data.url}" alt="Featured Image" style="max-width: 100%; max-height: 200px; object-fit: contain;">`;
-                    uploadArea.classList.add('has-image');
-                } else {
-                    console.error('Upload failed');
-                    placeholder.innerHTML = originalContent;
-                    alert('Failed to upload image. Please try again.');
+                switch(action) {
+                    case 'bold':
+                        editor.chain().focus().toggleBold().run();
+                        break;
+                    case 'italic':
+                        editor.chain().focus().toggleItalic().run();
+                        break;
+                    case 'strike':
+                        editor.chain().focus().toggleStrike().run();
+                        break;
+                    case 'code':
+                        editor.chain().focus().toggleCode().run();
+                        break;
+                    case 'heading':
+                        editor.chain().focus().toggleHeading({ level: parseInt(level) }).run();
+                        break;
+                    case 'bulletList':
+                        editor.chain().focus().toggleBulletList().run();
+                        break;
+                    case 'orderedList':
+                        editor.chain().focus().toggleOrderedList().run();
+                        break;
+                    case 'alignLeft':
+                        alignContent('left');
+                        break;
+                    case 'alignCenter':
+                        alignContent('center');
+                        break;
+                    case 'alignRight':
+                        alignContent('right');
+                        break;
+                    case 'alignJustify':
+                        alignContent('justify');
+                        break;
+                    case 'blockquote':
+                        editor.chain().focus().toggleBlockquote().run();
+                        break;
+                    case 'codeBlock':
+                        editor.chain().focus().toggleCodeBlock().run();
+                        break;
+                    case 'horizontalRule':
+                        editor.chain().focus().setHorizontalRule().run();
+                        break;
+                    case 'link':
+                        const linkUrl = prompt('Enter URL:');
+                        if (linkUrl) {
+                            editor.chain().focus().setLink({ href: linkUrl }).run();
+                        }
+                        break;
+                    case 'image':
+                        const imageUrl = prompt('Enter image URL:');
+                        if (imageUrl) {
+                            editor.chain().focus().setImage({ src: imageUrl }).run();
+                        }
+                        break;
+                    case 'undo':
+                        editor.chain().focus().undo().run();
+                        break;
+                    case 'redo':
+                        editor.chain().focus().redo().run();
+                        break;
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                placeholder.innerHTML = originalContent;
-                alert('An error occurred during upload.');
-            }
-        }
-    });
-
-    const seoHeader = document.querySelector('[data-toggle="seoContent"]');
-    const seoContent = document.getElementById('seoContent');
-
-    seoHeader.addEventListener('click', function() {
-        this.classList.toggle('collapsed');
-        seoContent.style.display = seoContent.style.display === 'none' ? 'block' : 'none';
-    });
-
-    document.getElementById('btnSaveDraft').addEventListener('click', function() {
-        const form = document.getElementById('postForm');
-        
-        document.getElementById('editorContent').value = editor.getHTML();
-
-        const existingHiddenTags = form.querySelectorAll('input[type="hidden"][name="Tags"]');
-        existingHiddenTags.forEach(el => el.remove());
-
-        const tagElements = document.querySelectorAll('#tagsList .tag-item');
-        tagElements.forEach(tagEl => {
-            const tagText = tagEl.childNodes[0].textContent.trim();
-            if(tagText) {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'Tags';
-                hiddenInput.value = tagText;
-                form.appendChild(hiddenInput);
-            }
+            });
         });
 
-        form.method = "post";
-        form.action = "/Admin/Posts/NewPost";
-        form.submit();
-    });
+        function alignContent(alignment) {
+            const selectedImage = document.querySelector('#tiptapEditor .ProseMirror-selectednode');
 
-    const tagsInput = document.getElementById('tagsInput');
-    const tagsList = document.getElementById('tagsList');
-    
-    tagsInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
+            if (selectedImage && selectedImage.tagName === 'IMG') {
+                selectedImage.classList.remove('align-left', 'align-center', 'align-right');
+                selectedImage.classList.add('align-' + alignment);
+                document.getElementById('editorContent').value = editor.getHTML();
+            } else {
+                editor.chain().focus().setTextAlign(alignment).run();
+            }
+        }
+
+        function updateToolbarState() {
+            document.querySelectorAll('.toolbar-btn').forEach(btn => {
+                const action = btn.dataset.action;
+                const level = btn.dataset.level;
+
+                let isActive = false;
+
+                switch(action) {
+                    case 'bold':
+                        isActive = editor.isActive('bold');
+                        break;
+                    case 'italic':
+                        isActive = editor.isActive('italic');
+                        break;
+                    case 'strike':
+                        isActive = editor.isActive('strike');
+                        break;
+                    case 'code':
+                        isActive = editor.isActive('code');
+                        break;
+                    case 'heading':
+                        isActive = editor.isActive('heading', { level: parseInt(level) });
+                        break;
+                    case 'bulletList':
+                        isActive = editor.isActive('bulletList');
+                        break;
+                    case 'orderedList':
+                        isActive = editor.isActive('orderedList');
+                        break;
+                    case 'alignLeft':
+                        isActive = editor.isActive({ textAlign: 'left' });
+                        break;
+                    case 'alignCenter':
+                        isActive = editor.isActive({ textAlign: 'center' });
+                        break;
+                    case 'alignRight':
+                        isActive = editor.isActive({ textAlign: 'right' });
+                        break;
+                    case 'alignJustify':
+                        isActive = editor.isActive({ textAlign: 'justify' });
+                        break;
+                    case 'blockquote':
+                        isActive = editor.isActive('blockquote');
+                        break;
+                    case 'codeBlock':
+                        isActive = editor.isActive('codeBlock');
+                        break;
+                    case 'link':
+                        isActive = editor.isActive('link');
+                        break;
+                }
+
+                btn.classList.toggle('is-active', isActive);
+            });
+
+            document.querySelector('[data-action="undo"]').disabled = !editor.can().undo();
+            document.querySelector('[data-action="redo"]').disabled = !editor.can().redo();
+        }
+
+        window.tiptapEditor = editor;
+
+        const titleInput = document.getElementById('Title');
+        const slugInput = document.getElementById('Slug');
+
+        titleInput.addEventListener('input', function() {
+            const slug = this.value
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            slugInput.value = slug;
+        });
+
+        const uploadArea = document.getElementById('featuredImageUpload');
+        const fileInput = document.getElementById('featuredImageInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            const tagValue = this.value.trim();
-            
-            if (tagValue) {
-                const tagSpan = document.createElement('span');
-                tagSpan.className = 'tag-item';
-                tagSpan.innerHTML = `${tagValue} <button type="button" class="tag-remove">&times;</button>`;
-                
-                tagsList.appendChild(tagSpan);
-                this.value = '';
-                
-                tagSpan.querySelector('.tag-remove').addEventListener('click', function() {
-                    tagSpan.remove();
-                });
-            }
-        }
-    });
-
-    document.querySelectorAll('.tag-remove').forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.parentElement.remove();
+            uploadArea.style.borderColor = 'var(--admin-primary)';
         });
-    });
 
-    document.getElementById('metaTitle').addEventListener('input', function() {
-        this.nextElementSibling.textContent = `${this.value.length}/60`;
-    });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'var(--admin-border)';
+        });
 
-    document.getElementById('metaDescription').addEventListener('input', function() {
-        this.nextElementSibling.textContent = `${this.value.length}/160`;
-    });
-</script>
+        fileInput.addEventListener('change', async function () {
+            if (this.files && this.files[0]) {
+                const formData = new FormData();
+                formData.append('file', this.files[0]);
+
+                const placeholder = uploadArea.querySelector('.upload-placeholder');
+                const originalContent = placeholder.innerHTML;
+                placeholder.innerHTML = '<div class="spinner">Uploading...</div>';
+
+                try {
+                    const response = await fetch('/Admin/Posts/UploadImage', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        document.getElementById('UrlMainImage').value = data.url;
+
+                        placeholder.innerHTML = `<img src="${data.url}" alt="Featured Image" style="max-width: 100%; max-height: 200px; object-fit: contain;">`;
+                        uploadArea.classList.add('has-image');
+                    } else {
+                        console.error('Upload failed');
+                        placeholder.innerHTML = originalContent;
+                        alert('Failed to upload image. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    placeholder.innerHTML = originalContent;
+                    alert('An error occurred during upload.');
+                }
+            }
+        });
+
+        const seoHeader = document.querySelector('[data-toggle="seoContent"]');
+        const seoContent = document.getElementById('seoContent');
+
+        seoHeader.addEventListener('click', function() {
+            this.classList.toggle('collapsed');
+            seoContent.style.display = seoContent.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('btnSaveDraft').addEventListener('click', function() {
+            const form = document.getElementById('postForm');
+
+            document.getElementById('editorContent').value = editor.getHTML();
+
+            const existingHiddenTags = form.querySelectorAll('input[type="hidden"][name="Tags"]');
+            existingHiddenTags.forEach(el => el.remove());
+
+            const tagElements = document.querySelectorAll('#tagsList .tag-item');
+            tagElements.forEach(tagEl => {
+                const tagText = tagEl.childNodes[0].textContent.trim();
+                if(tagText) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'Tags';
+                    hiddenInput.value = tagText;
+                    form.appendChild(hiddenInput);
+                }
+            });
+
+            const existingHiddenCategories = form.querySelectorAll('input[type="hidden"][name="Categories"]');
+            existingHiddenCategories.forEach(el => el.remove());
+
+            form.method = "post";
+            form.action = '@Url.Action("NewPost", "Posts", new { area = "admin" })';
+            form.submit();
+        });
+
+        const tagsInput = document.getElementById('tagsInput');
+        const tagsList = document.getElementById('tagsList');
+
+        tagsInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tagValue = this.value.trim();
+
+                if (tagValue) {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.className = 'tag-item';
+                    tagSpan.innerHTML = `${tagValue} <button type="button" class="tag-remove">&times;</button>`;
+
+                    tagsList.appendChild(tagSpan);
+                    this.value = '';
+
+                    tagSpan.querySelector('.tag-remove').addEventListener('click', function() {
+                        tagSpan.remove();
+                    });
+                }
+            }
+        });
+
+        const categoriesInput = document.getElementById('categoriesInput');
+        const categoriesList = document.getElementById('categoriesList');
+
+        categoriesInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const categoryValue = this.value.trim();
+
+                if (categoryValue) {
+
+                    const categoryLabel = document.createElement('label');
+                    categoryLabel.className = 'category-item';
+                    categoryLabel.innerHTML = `<input type="radio" name="category" value="${categoryValue}"><span class="category-label">${categoryValue}</span>`;
+
+                    categoriesList.appendChild(categoryLabel);
+                    this.value = '';
+                }
+            }
+        });
+
+        document.querySelectorAll('.tag-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+
+        document.getElementById('MetaTitle').addEventListener('input', function() {
+            this.nextElementSibling.textContent = `${this.value.length}/60`;
+        });
+
+        document.getElementById('MetaDescription').addEventListener('input', function() {
+            this.nextElementSibling.textContent = `${this.value.length}/160`;
+        });
+    </script>
 }

@@ -27,10 +27,10 @@ namespace dbs.infra.Context
             modelBuilder.Ignore<Event>();
             modelBuilder.Ignore<ValidationResult>();
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BlogContext).Assembly);
-
             foreach (var relationship in modelBuilder.Model.GetEntityTypes()
                 .SelectMany(e => e.GetForeignKeys())) relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BlogContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
         }

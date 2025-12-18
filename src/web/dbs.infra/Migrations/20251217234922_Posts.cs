@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dbs.infra.Migrations
 {
     /// <inheritdoc />
-    public partial class Post : Migration
+    public partial class Posts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,8 +51,8 @@ namespace dbs.infra.Migrations
                     Content = table.Column<string>(type: "varchar(MAX)", nullable: false),
                     Summary = table.Column<string>(type: "varchar(1000)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    MetaTitle = table.Column<string>(type: "varchar(200)", nullable: false),
-                    MetaDescription = table.Column<string>(type: "varchar(500)", nullable: false),
+                    MetaTitle = table.Column<string>(type: "varchar(200)", nullable: true),
+                    MetaDescription = table.Column<string>(type: "varchar(500)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -106,44 +106,48 @@ namespace dbs.infra.Migrations
                 name: "PostCategories",
                 columns: table => new
                 {
-                    CategoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PostsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostCategories", x => new { x.CategoriesId, x.PostsId });
+                    table.PrimaryKey("PK_PostCategories", x => new { x.PostId, x.CategoryId });
                     table.ForeignKey(
-                        name: "FK_PostCategories_Categories_CategoriesId",
-                        column: x => x.CategoriesId,
+                        name: "FK_PostCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostCategories_Posts_PostsId",
-                        column: x => x.PostsId,
+                        name: "FK_PostCategories_Posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "PostTags",
                 columns: table => new
                 {
-                    PostsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostTags", x => new { x.PostsId, x.TagsId });
+                    table.PrimaryKey("PK_PostTags", x => new { x.PostId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_PostTags_Posts_PostsId",
-                        column: x => x.PostsId,
+                        name: "FK_PostTags_Posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostTags_Tags_TagsId",
-                        column: x => x.TagsId,
+                        name: "FK_PostTags_Tags_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tags",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -157,14 +161,20 @@ namespace dbs.infra.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostCategories_PostsId",
+                name: "IX_PostCategories_CategoryId",
                 table: "PostCategories",
-                column: "PostsId");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostTags_TagsId",
+                name: "IX_Posts_UrlSlug",
+                table: "Posts",
+                column: "UrlSlug",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostTags_TagId",
                 table: "PostTags",
-                column: "TagsId");
+                column: "TagId");
         }
 
         /// <inheritdoc />

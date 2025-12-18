@@ -8,6 +8,7 @@ namespace dbs.blog.DTOs
         private const int SHOR_SUMMARY_LENGTH = 70;
 
         public Guid Id { get; private set; }
+        public string Url { get; private set; } = string.Empty;
         public string Title { get; private set; } = string.Empty;
         public string Summary { get; private set; } = string.Empty;
         public string MainImageUrl { get; private set; } = string.Empty;
@@ -19,6 +20,7 @@ namespace dbs.blog.DTOs
             return new PostListItemDTO
             {
                 Id = post.Id,
+                Url = post.UrlSlug,
                 Title = post.Title,
                 Summary = post.Summary,
                 MainImageUrl = post.UrlMainImage,

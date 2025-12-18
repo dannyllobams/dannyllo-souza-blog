@@ -12,12 +12,36 @@ namespace dbs.infra.Repositories
         {
         }
 
+        public override Task<int> CountAsync()
+        {
+            return _blogContext.Posts
+                .Where(post => post.Status == PostStatus.PUBLISHED)
+                .CountAsync();
+        }
+
+        public async Task<int> CountAllAsync()
+        {
+            return await _blogContext.Posts.CountAsync();
+        }
+
+        public async Task<Post?> GetPostByUrlSlugAsync(string urlSlug, CancellationToken cancellationToken = default)
+        {
+            var post = await _blogContext.Posts
+                .Include(p => p.Categories)
+                .Include(p => p.Tags)
+                .Include(p => p.Comments).ThenInclude(c => c.Replies)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(p => p.UrlSlug == urlSlug, cancellationToken);
+
+            return post;
+        }
+
         public async Task<IEnumerable<Post>> GetAllPublishedsAsync(int page, int pageSize)
         {
             return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
-                .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
+                .Include(post => post.Comments).ThenInclude(c => c.Replies)
                 .AsSplitQuery()
                 .Where(post => post.Status == PostStatus.PUBLISHED)
                 .OrderByDescending(post => post.CreatedAt)
@@ -33,7 +57,7 @@ namespace dbs.infra.Repositories
             return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
-                .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
+                .Include(post => post.Comments).ThenInclude(c => c.Replies)
                 .AsSplitQuery()
                 .Where(post => post.Categories.Any(t => t.Id == category.Id))
                 .AsNoTracking()
@@ -48,7 +72,7 @@ namespace dbs.infra.Repositories
             return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
-                .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
+                .Include(post => post.Comments).ThenInclude(c => c.Replies)
                 .AsSplitQuery()
                 .Where(post => post.Tags.Any(t => t.Id == tag.Id))                
                 .AsNoTracking()
@@ -63,7 +87,7 @@ namespace dbs.infra.Repositories
             return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
-                .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
+                .Include(post => post.Comments).ThenInclude(c => c.Replies)
                 .FirstOrDefaultAsync(post => post.Id == id);
         }
 
@@ -72,7 +96,7 @@ namespace dbs.infra.Repositories
             return await _blogContext.Posts
                 .Include(post => post.Categories)
                 .Include(post => post.Tags)
-                .Include(post => post.Comments).ThenInclude(reply => reply.Replies)
+                .Include(post => post.Comments).ThenInclude(c => c.Replies)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .OrderByDescending(post => post.CreatedAt)
@@ -84,10 +108,23 @@ namespace dbs.infra.Repositories
         //Comments
         public async Task<int> CountCommentsAsync()
         {
-            return await _blogContext.Categories.CountAsync();
+            return await _blogContext.Comments.CountAsync();
         }
 
         //Categories
+        public async Task AddCategoryAsync(Category category)
+        {
+            await _blogContext.Categories.AddAsync(category);
+        }
+
+
+        public async Task<IEnumerable<Category>> GetCategoriesAsync()
+        {
+            return await _blogContext.Categories
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<Category?> GetCategoryByNameAsync(string categoryName)
         {
             return await _blogContext.Categories
@@ -110,6 +147,11 @@ namespace dbs.infra.Repositories
 
 
         //Tags
+        public async Task AddTagAsync(Tag tag)
+        {
+            await _blogContext.Tags.AddAsync(tag);
+        }
+
         public async Task<Tag?> GetTagByNameAsync(string tagName)
         {
             return await _blogContext.Tags

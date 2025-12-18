@@ -16,7 +16,7 @@ namespace dbs.core.Messages
             Timestamp = DateTime.Now;
         }
 
-        public abstract bool EhValido();
+        public abstract bool IsValid();
     }
 
     public abstract class Command<TResult> : Command, ICommand<TResult> where TResult : CommandResult
