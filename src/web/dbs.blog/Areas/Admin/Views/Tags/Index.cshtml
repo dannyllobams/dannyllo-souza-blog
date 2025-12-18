@@ -1,0 +1,208 @@
+@using dbs.blog.DTOs
+@model IEnumerable<TagDTO>
+
+@{
+    ViewData["Title"] = "Tags";
+    ViewData["Breadcrumb"] = "Tags";
+}
+
+<div class="content-card">
+    <div class="card-header">
+        <h2 class="card-title">Tags</h2>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        @if (Model != null && Model.Any())
+        {
+            <table class="blog-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var tag in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: var(--admin-text);">@tag.Name</div>
+                            </td>
+                            <td>
+                                @if (tag.IsUsed)
+                                {
+                                    <span class="status-badge published" style="text-transform: capitalize;">In Use</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge draft" style="text-transform: capitalize;">Not Used</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    @if (!tag.IsUsed)
+                                    {
+                                        <button type="button" class="action-btn delete" title="Delete" data-tag-id="@tag.Id" data-tag-name="@tag.Name">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                            </svg>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                No tags found.
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.action-btn.delete[data-tag-id]');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tagId = this.getAttribute('data-tag-id');
+                const tagName = this.getAttribute('data-tag-name') || 'this tag';
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Do you want to delete "${tagName}"? This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    background: '#1e1e1e',
+                    color: '#ffffff',
+                    customClass: {
+                        popup: 'swal-dark',
+                        confirmButton: 'swal-confirm',
+                        cancelButton: 'swal-cancel'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteTag(tagId, button);
+                    }
+                });
+            });
+        });
+        
+        function deleteTag(tagId, buttonElement) {
+            buttonElement.disabled = true;
+            buttonElement.style.opacity = '0.5';
+            buttonElement.style.cursor = 'not-allowed';
+            
+            fetch(`@Url.Action("DeleteTag", "Tags", new { area = "admin" })?tagId=${tagId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(async response => {
+                if (response.ok) {
+                    return {};
+                } else {
+                    const text = await response.text();
+                    let errorMessage = 'Failed to delete tag';
+                    try {
+                        const data = text ? JSON.parse(text) : null;
+                        if (Array.isArray(data)) {
+                            errorMessage = data.join(', ');
+                        } else if (data && typeof data === 'string') {
+                            errorMessage = data;
+                        } else if (data && data.message) {
+                            errorMessage = data.message;
+                        }
+                    } catch {
+                        errorMessage = text || 'Failed to delete tag';
+                    }
+                    throw new Error(errorMessage);
+                }
+            })
+            .then(() => {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'The tag has been deleted successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#7c3aed',
+                    background: '#1e1e1e',
+                    color: '#ffffff',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    const row = buttonElement.closest('tr');
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            const tbody = row.closest('tbody');
+                            if (tbody && tbody.children.length === 0) {
+                                tbody.innerHTML = `
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                                            No tags found.
+                                        </td>
+                                    </tr>
+                                `;
+                            }
+                        }, 300);
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            })
+            .catch(error => {
+                buttonElement.disabled = false;
+                buttonElement.style.opacity = '1';
+                buttonElement.style.cursor = 'pointer';
+                
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'An error occurred while deleting the tag.',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                    background: '#1e1e1e',
+                    color: '#ffffff'
+                });
+            });
+        }
+    });
+</script>
+
+<style>
+    .swal-dark {
+        background: #1e1e1e !important;
+        border: 1px solid #2a2a2a !important;
+    }
+    
+    .swal-confirm {
+        background: #ef4444 !important;
+    }
+    
+    .swal-confirm:hover {
+        background: #dc2626 !important;
+    }
+    
+    .swal-cancel {
+        background: #6b7280 !important;
+    }
+    
+    .swal-cancel:hover {
+        background: #4b5563 !important;
+    }
+</style>
+

@@ -23,6 +23,7 @@ namespace dbs.domain.Repositories
 
         //Tags
         Task AddTagAsync(Tag tag);
+        Task<IEnumerable<Tag>> GetTagsAsync();
         Task<Tag?> GetTagByNameAsync(string tagName);
         Task<bool> IsTagUsedAsync(string tagName);
         void RemoveTag(Tag tag);

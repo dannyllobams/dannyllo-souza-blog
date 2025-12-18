@@ -1,0 +1,208 @@
+@using dbs.blog.DTOs
+@model IEnumerable<CategoryDTO>
+
+@{
+    ViewData["Title"] = "Categories";
+    ViewData["Breadcrumb"] = "Categories";
+}
+
+<div class="content-card">
+    <div class="card-header">
+        <h2 class="card-title">Categories</h2>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        @if (Model != null && Model.Any())
+        {
+            <table class="blog-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var category in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: var(--admin-text);">@category.Name</div>
+                            </td>
+                            <td>
+                                @if (category.IsUsed)
+                                {
+                                    <span class="status-badge published" style="text-transform: capitalize;">In Use</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge draft" style="text-transform: capitalize;">Not Used</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    @if (!category.IsUsed)
+                                    {
+                                        <button type="button" class="action-btn delete" title="Delete" data-category-id="@category.Id" data-category-name="@category.Name">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                            </svg>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                No categories found.
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.action-btn.delete[data-category-id]');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const categoryId = this.getAttribute('data-category-id');
+                const categoryName = this.getAttribute('data-category-name') || 'this category';
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Do you want to delete "${categoryName}"? This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    background: '#1e1e1e',
+                    color: '#ffffff',
+                    customClass: {
+                        popup: 'swal-dark',
+                        confirmButton: 'swal-confirm',
+                        cancelButton: 'swal-cancel'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteCategory(categoryId, button);
+                    }
+                });
+            });
+        });
+        
+        function deleteCategory(categoryId, buttonElement) {
+            buttonElement.disabled = true;
+            buttonElement.style.opacity = '0.5';
+            buttonElement.style.cursor = 'not-allowed';
+            
+            fetch(`@Url.Action("DeleteCategory", "Categories", new { area = "admin" })?categoryId=${categoryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(async response => {
+                if (response.ok) {
+                    return {};
+                } else {
+                    const text = await response.text();
+                    let errorMessage = 'Failed to delete category';
+                    try {
+                        const data = text ? JSON.parse(text) : null;
+                        if (Array.isArray(data)) {
+                            errorMessage = data.join(', ');
+                        } else if (data && typeof data === 'string') {
+                            errorMessage = data;
+                        } else if (data && data.message) {
+                            errorMessage = data.message;
+                        }
+                    } catch {
+                        errorMessage = text || 'Failed to delete category';
+                    }
+                    throw new Error(errorMessage);
+                }
+            })
+            .then(() => {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'The category has been deleted successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#7c3aed',
+                    background: '#1e1e1e',
+                    color: '#ffffff',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    const row = buttonElement.closest('tr');
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            const tbody = row.closest('tbody');
+                            if (tbody && tbody.children.length === 0) {
+                                tbody.innerHTML = `
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                                            No categories found.
+                                        </td>
+                                    </tr>
+                                `;
+                            }
+                        }, 300);
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            })
+            .catch(error => {
+                buttonElement.disabled = false;
+                buttonElement.style.opacity = '1';
+                buttonElement.style.cursor = 'pointer';
+                
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'An error occurred while deleting the category.',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                    background: '#1e1e1e',
+                    color: '#ffffff'
+                });
+            });
+        }
+    });
+</script>
+
+<style>
+    .swal-dark {
+        background: #1e1e1e !important;
+        border: 1px solid #2a2a2a !important;
+    }
+    
+    .swal-confirm {
+        background: #ef4444 !important;
+    }
+    
+    .swal-confirm:hover {
+        background: #dc2626 !important;
+    }
+    
+    .swal-cancel {
+        background: #6b7280 !important;
+    }
+    
+    .swal-cancel:hover {
+        background: #4b5563 !important;
+    }
+</style>
+

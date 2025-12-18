@@ -152,6 +152,13 @@ namespace dbs.infra.Repositories
             await _blogContext.Tags.AddAsync(tag);
         }
 
+        public async Task<IEnumerable<Tag>> GetTagsAsync()
+        {
+            return await _blogContext.Tags
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<Tag?> GetTagByNameAsync(string tagName)
         {
             return await _blogContext.Tags

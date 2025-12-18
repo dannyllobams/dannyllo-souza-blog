@@ -29,7 +29,7 @@ namespace dbs.blog.DTOs
                 Content = post.Content,
                 Summary = post.Summary,
                 Status = post.Status,
-                SEO = SEODTO.ToSEODTO(post.SEO),
+                SEO = SEODTO.ToSEODTO(post.SEO!),
                 Comments = post.Comments.Select(CommentDTO.ToCommentDTO).ToList().AsReadOnly(),
                 Categories = post.Categories.Select(c => c.Name).ToList().AsReadOnly(),
                 Tags = post.Tags.Select(t => t.Name).ToList().AsReadOnly()
