@@ -333,7 +333,9 @@
 }
 
 .status-info {
-    margin-bottom: 16px;
+    display: flex;
+    justify-content: end;
+    padding: 0 1rem;
 }
 
 .form-select {

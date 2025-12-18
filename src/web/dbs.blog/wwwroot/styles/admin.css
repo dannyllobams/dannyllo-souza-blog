@@ -19,6 +19,7 @@
     --admin-radius: 12px;
     --admin-radius-lg: 16px;
     --admin-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --admin-warning-transparency: #f59e0b7f;
 }
 
 /* =====================================================
