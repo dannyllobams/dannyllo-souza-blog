@@ -1,0 +1,150 @@
+@using dbs.blog.DTOs
+@model ContactDTO
+
+@{
+    ViewData["Title"] = "Contact Details";
+    ViewData["Breadcrumb"] = "Contact Details";
+}
+
+<div class="content-card">
+    <div class="card-header">
+        <h2 class="card-title">Contact Details</h2>
+        <a asp-action="Index" asp-controller="Contacts" asp-area="admin" class="btn btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6"/>
+            </svg>
+            Back to List
+        </a>
+    </div>
+    <div class="card-body">
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                    <div>
+                        <h3 style="color: var(--admin-text); font-size: 20px; font-weight: 600; margin-bottom: 8px;">@Model.Name</h3>
+                        <div style="color: var(--admin-text-muted); font-size: 14px;">@Model.Email</div>
+                    </div>
+                    <div>
+                        @if (Model.Received)
+                        {
+                            <span class="status-badge published" style="text-transform: capitalize;">Viewed</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge draft" style="text-transform: capitalize;">New</span>
+                        }
+                    </div>
+                </div>
+                <div style="color: var(--admin-text-muted); font-size: 14px;">
+                    Received on @Model.CreatedAt.ToString("dd MMM yyyy 'at' HH:mm")
+                </div>
+            </div>
+
+            <div style="padding: 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--admin-border); border-radius: var(--admin-radius);">
+                <div style="color: var(--admin-text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Message</div>
+                <div style="color: var(--admin-text); font-size: 15px; line-height: 1.6; white-space: pre-wrap;">@Model.Message</div>
+            </div>
+
+            @if (!Model.Received)
+            {
+                <div>
+                    <button type="button" id="markAsReceivedBtn" class="btn btn-primary" data-contact-id="@Model.Id">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                        Mark as Viewed
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const markAsReceivedBtn = document.getElementById('markAsReceivedBtn');
+            
+            if (markAsReceivedBtn) {
+                markAsReceivedBtn.addEventListener('click', function() {
+                    const contactId = this.getAttribute('data-contact-id');
+                    markAsReceived(contactId, this);
+                });
+            }
+            
+            function markAsReceived(contactId, buttonElement) {
+                buttonElement.disabled = true;
+                buttonElement.style.opacity = '0.5';
+                buttonElement.style.cursor = 'not-allowed';
+                
+                fetch(`@Url.Action("MarkAsReceived", "Contacts", new { area = "admin" })?contactId=${contactId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(async response => {
+                    if (response.ok) {
+                        return {};
+                    } else {
+                        const text = await response.text();
+                        let errorMessage = 'Failed to mark contact as received';
+                        try {
+                            const data = text ? JSON.parse(text) : null;
+                            if (Array.isArray(data)) {
+                                errorMessage = data.join(', ');
+                            } else if (data && typeof data === 'string') {
+                                errorMessage = data;
+                            } else if (data && data.message) {
+                                errorMessage = data.message;
+                            }
+                        } catch {
+                            errorMessage = text || 'Failed to mark contact as received';
+                        }
+                        throw new Error(errorMessage);
+                    }
+                })
+                .then(() => {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Contact marked as viewed successfully.',
+                        icon: 'success',
+                        confirmButtonColor: '#7c3aed',
+                        background: '#1e1e1e',
+                        color: '#ffffff',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        // Update UI
+                        const statusBadge = document.querySelector('.status-badge');
+                        if (statusBadge) {
+                            statusBadge.textContent = 'Viewed';
+                            statusBadge.className = 'status-badge published';
+                            statusBadge.style.textTransform = 'capitalize';
+                        }
+                        
+                        // Remove button
+                        if (buttonElement) {
+                            buttonElement.remove();
+                        }
+                    });
+                })
+                .catch(error => {
+                    buttonElement.disabled = false;
+                    buttonElement.style.opacity = '1';
+                    buttonElement.style.cursor = 'pointer';
+                    
+                    Swal.fire({
+                        title: 'Error!',
+                        text: error.message || 'An error occurred while marking the contact as received.',
+                        icon: 'error',
+                        confirmButtonColor: '#ef4444',
+                        background: '#1e1e1e',
+                        color: '#ffffff'
+                    });
+                });
+            }
+        });
+    </script>
+}
+

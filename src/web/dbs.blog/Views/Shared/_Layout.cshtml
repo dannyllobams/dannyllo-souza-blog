@@ -23,6 +23,7 @@
 
     <link rel="stylesheet" href="~/plugins/aos/aos.css" asp-append-version="true">
     <link rel="stylesheet" href="~/styles/output.css" asp-append-version="true">
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body>
@@ -41,7 +42,7 @@
                 <!-- navbar -->
                 <nav class="navbar">
                     <span class="indicator"></span>
-                    <a is-active-route asp-controller="Home", asp-action="Index">Home</a>
+                    <a is-active-route asp-controller="Home" , asp-action="Index">Home</a>
                     <a is-active-route asp-controller="Home" asp-action="About">About</a>
                     <a is-active-route asp-controller="Blog" asp-action="Index">Blog</a>
                     <a is-active-route asp-controller="Home" asp-action="Contact">Contact</a>
@@ -108,5 +109,7 @@
     <!-- start of script -->
     <script src="~/plugins/aos/aos.js" asp-append-version="true"></script>
     <script src="~/scripts/main.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

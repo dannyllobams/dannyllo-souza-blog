@@ -24,6 +24,7 @@ namespace dbs.infra.Repositories
         {
             return await _blogContext.Set<T>()
                 .AsNoTracking()
+                .OrderByDescending(t => t.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

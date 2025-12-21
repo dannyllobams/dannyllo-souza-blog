@@ -16,6 +16,7 @@ namespace dbs.infra.Context
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<ConfigurationKey> ConfigurationKeys { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

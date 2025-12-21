@@ -16,6 +16,7 @@ namespace dbs.blog.Configuration
 
             services.AddScoped<IMediatorHandler, MediatorHandler>();
             services.AddScoped<IPostsRepository, PostsRepository>();
+            services.AddScoped<IContactRepository, ContactRepository>();
 
             services.AddCortexMediator(
                 configuration: configuration,

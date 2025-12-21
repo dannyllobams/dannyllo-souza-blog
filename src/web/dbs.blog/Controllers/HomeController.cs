@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using dbs.blog.Application.Commands;
 using dbs.blog.Models;
+using dbs.core.Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dbs.blog.Controllers
@@ -7,11 +9,11 @@ namespace dbs.blog.Controllers
 
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IMediatorHandler _mediator;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IMediatorHandler mediator)
         {
-            _logger = logger;
+            _mediator = mediator;
         }
 
         public IActionResult Index()
@@ -26,6 +28,36 @@ namespace dbs.blog.Controllers
 
         public IActionResult Contact()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Contact(SubmitContactViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var submitContactResponse = await _mediator.CallCommand<SubmitContactCommand>(new SubmitContactCommand()
+            {
+                Name = model.Name,
+                Email = model.Email,
+                Message = model.Message
+            });
+
+            if (!submitContactResponse.IsValid)
+            {
+                foreach (var error in submitContactResponse.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+                return View(model);
+            }
+
+            TempData["MessageReceived"] = true;
+
             return View();
         }
 
