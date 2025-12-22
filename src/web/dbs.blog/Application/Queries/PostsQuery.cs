@@ -10,6 +10,7 @@ namespace dbs.blog.Application.Queries
     public class PostsQuery : Query<IEnumerable<PostListItemDTO>>
     {
         public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
         public bool PublishedOnly { get; set; } = true;
 
         public override bool IsValid()
@@ -30,9 +31,6 @@ namespace dbs.blog.Application.Queries
 
     public class PostsQueryHandler : QueryHandler, IQueryHandler<PostsQuery, QueryResult<IEnumerable<PostListItemDTO>>>
     {
-        private const int PAGESIZE = 10;
-
-
         private readonly IPostsRepository _postsRepository;
         public PostsQueryHandler(IPostsRepository postsRepository)
         {
@@ -47,8 +45,8 @@ namespace dbs.blog.Application.Queries
             }
 
             var posts = query.PublishedOnly ? 
-                await _postsRepository.GetAllPublishedsAsync(query.PageNumber, PAGESIZE) : 
-                await _postsRepository.GetAllAsync(query.PageNumber, PAGESIZE);
+                await _postsRepository.GetAllPublishedsAsync(query.PageNumber, query.PageSize) : 
+                await _postsRepository.GetAllAsync(query.PageNumber, query.PageSize);
 
             return Response(posts.Select(PostListItemDTO.ToPostListItemDTO));
         }

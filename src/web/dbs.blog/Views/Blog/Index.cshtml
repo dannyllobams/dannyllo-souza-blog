@@ -1,4 +1,9 @@
-﻿@{
+﻿@using dbs.blog.DTOs 
+
+@{
+    var posts = ViewBag.Posts != null ? ViewBag.Posts as List<PostListItemDTO> : new List<PostListItemDTO>();
+    var totalPages = (int)ViewBag.TotalPages;
+    var totalPosts = (int)ViewBag.TotalPosts;
 }
 
 <!-- start of main -->
@@ -23,17 +28,17 @@
                                     </svg>
                                 </li>
                                 <li>
-                                    <a class="link" href="./index.html">Home</a>
+                                    <a class="link" asp-action="Index" asp-controller="Home">Home</a>
                                 </li>
                                 <li><span class="px-4">•</span></li>
                                 <li>
-                                    <a class="link" href="./index.html">Blog</a>
+                                    <a class="link" asp-action="Index" asp-controller="Blog">Blog</a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
                     <div class="sm:col-4 block mt-6 sm:mt-0 text-center sm:text-right">
-                        <span class="font-secondary text-2xl leading-none text-white/75">Blog (13)</span>
+                        <span class="font-secondary text-2xl leading-none text-white/75">Blog (@ViewBag.totalPosts)</span>
                     </div>
                 </div>
             </div>
@@ -45,140 +50,116 @@
     <section class="py-28 bg-white text-dark rounded-b-2xl">
         <div class="container">
             <!-- Blog Posts -->
-            <div class="row md:gx-4 gy-5">
-                <!-- Blog Post 1 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:0ms;--md-delay:0ms;--sm-delay:0ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="You have no idea how much better you can feel!" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/01.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">lifestyle</span>
-                                <span class="opacity-75 text-sm">25 May / 2023</span>
+            <div id="posts" class="row md:gx-4 gy-5">
+                @foreach (var post in posts!)
+                {
+                    <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:0ms;--md-delay:0ms;--sm-delay:0ms">
+                        <article class="relative group text-center">
+                            <div class="relative overflow-hidden rounded-lg mb-8">
+                                <!-- Blog Post Image -->
+                                <img alt="@post.Title" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="@post.MainImageUrl" />
                             </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">You have no idea how much better you can feel!</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 2 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:75ms;--md-delay:75ms;--sm-delay:75ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="The Role of a Developer in Creating Communities" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/09.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">post elements</span>
-                                <span class="opacity-75 text-sm">23 May / 2023</span>
+                            <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
+                                <!-- Blog Post Tags and Date -->
+                                <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
+                                    <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">@post.Categories</span>
+                                    <span class="opacity-75 text-sm">@post.Date.ToString("dd MMM yyyy")</span>
+                                </div>
+                                <!-- Blog Post Title -->
+                                <h3 class="text-xl md:text-2xl leading-tight">
+                                    <a class="stretched-link" href="@Url.Action("Post", "Blog")/@post.Url">@post.Title</a>
+                                </h3>
                             </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">The Role of a Developer in Creating Communities</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 3 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:150ms;--md-delay:0ms;--sm-delay:0ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="Ways to improve usability and accessibility" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/12.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">tech</span>
-                                <span class="opacity-75 text-sm">13 May / 2023</span>
-                            </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">Ways to improve usability and accessibility</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 4 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:0ms;--md-delay:75ms;--sm-delay:75ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="A Complete Guide to Mastering Portrait Photography" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/02.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">photography</span>
-                                <span class="opacity-75 text-sm">01 May / 2023</span>
-                            </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">A Complete Guide to Mastering Portrait Photography</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 5 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:75ms;--md-delay:0ms;--sm-delay:0ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="The Importance of Lighting in Portrait Photography" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/07.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">photography</span>
-                                <span class="opacity-75 text-sm">22 Apr / 2023</span>
-                            </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">The Importance of Lighting in Portrait Photography</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 6 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:150ms;--md-delay:75ms;--sm-delay:75ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="Quick tips about blogging" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/06.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">writing</span>
-                                <span class="opacity-75 text-sm">16 Apr / 2023</span>
-                            </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">Quick tips about blogging</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-                <div class="text-center mt-16">
-                    <button class="button button-dark">
+                        </article>
+                    </div>
+                }
+            </div>
+            @if (totalPages > 1)
+            {
+                <div id="load-more-container" class="text-center mt-16">
+                    <button class="button button-dark" id="load-more-posts">
                         <span>Load More</span>
                     </button>
                 </div>
-            </div>
+            }
         </div>
     </section>
 
 </main>
 <!-- end of main -->
+
+@section Scripts {
+    <script>
+        let currentPage = 1;
+        const loadMoreBtn = document.getElementById('load-more-posts');
+        const postsContainer = document.getElementById('posts');
+
+        const hideButton = () => {
+            var loadMoreContainer = document.getElementById('load-more-container');
+            loadMoreContainer.style.display = 'none';
+            return;
+        }
+
+        loadMoreBtn.addEventListener('click', async () => {
+            currentPage++;
+
+            const response = await fetch(`@Url.Action("LoadPosts", "Blog")?page=${currentPage}`);
+            if (!response.ok) return;
+
+            const loadPostsResponse = await response.json();
+
+            if (!loadPostsResponse.success || (!loadPostsResponse.posts || loadPostsResponse.posts.length === 0)) {
+                hideButton();
+            }
+
+            const posts = loadPostsResponse.posts;
+
+            posts.forEach(post => {
+                const postHtml = `
+                    <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500">
+                        <article class="relative group text-center">
+                            <div class="relative overflow-hidden rounded-lg mb-8">
+                                <img
+                                    alt="${post.title}"
+                                    loading="lazy"
+                                    width="620"
+                                    height="500"
+                                    class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20"
+                                    src="${post.mainImageUrl}" />
+                            </div>
+                            <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
+                                <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
+                                    <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">
+                                        ${post.categories}
+                                    </span>
+                                    <span class="opacity-75 text-sm">
+                                        ${new Date(post.date).toLocaleDateString('en-US', {
+                                            day: '2-digit',
+                                            month: 'short',
+                                            year: 'numeric'
+                                        })}
+                                    </span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl leading-tight">
+                                    <a class="stretched-link" href="/Blog/Post/${post.url}">
+                                        ${post.title}
+                                    </a>
+                                </h3>
+                            </div>
+                        </article>
+                    </div>
+                `;
+
+                postsContainer.insertAdjacentHTML('beforeend', postHtml);
+
+                if (currentPage >= @totalPages) {
+                    hideButton();
+                }
+            });
+
+            if (window.AOS) {
+                AOS.refresh();
+            }
+        });
+    </script>
+}

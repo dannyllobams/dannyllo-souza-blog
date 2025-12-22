@@ -12,6 +12,7 @@ namespace dbs.blog.DTOs
         public string Title { get; private set; } = string.Empty;
         public string Summary { get; private set; } = string.Empty;
         public string MainImageUrl { get; private set; } = string.Empty;
+        public string Categories { get; private set; } = string.Empty;
         public PostStatus Status { get; private set; }
         public DateTime Date { get; private set; }
 
@@ -24,6 +25,7 @@ namespace dbs.blog.DTOs
                 Title = post.Title,
                 Summary = post.Summary,
                 MainImageUrl = post.UrlMainImage,
+                Categories = string.Join(", ", post.Categories.Select(c => c.Name)),
                 Status = post.Status,
                 Date = post.CreatedAt
             };

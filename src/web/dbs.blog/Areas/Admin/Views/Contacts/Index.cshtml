@@ -53,7 +53,7 @@
                             </td>
                             <td>
                                 <div class="action-btns">
-                                    <a asp-action="View" asp-controller="Contacts" asp-area="admin" asp-route-id="@contact.Id" class="action-btn edit" title="View">
+                                    <a asp-action="View" asp-controller="Contacts" asp-area="Admin" asp-route-id="@contact.Id" class="action-btn edit" title="View">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
                                             <circle cx="12" cy="12" r="3"/>
@@ -85,7 +85,7 @@
                 <div class="pagination">
                     @if (currentPage > 1)
                     {
-                        <a asp-action="Index" asp-controller="Contacts" asp-area="admin" asp-route-page="@(currentPage - 1)" class="pagination-btn">
+                        <a asp-action="Index" asp-controller="Contacts" asp-area="Admin" asp-route-page="@(currentPage - 1)" class="pagination-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m15 18-6-6 6-6"/>
                             </svg>
@@ -100,7 +100,7 @@
                             
                             if (startPage > 1)
                             {
-                                <a asp-action="Index" asp-controller="Contacts" asp-area="admin" asp-route-page="1" class="pagination-number">1</a>
+                                <a asp-action="Index" asp-controller="Contacts" asp-area="Admin" asp-route-page="1" class="pagination-number">1</a>
                                 @if (startPage > 2)
                                 {
                                     <span class="pagination-ellipsis">...</span>
@@ -115,7 +115,7 @@
                                 }
                                 else
                                 {
-                                    <a asp-action="Index" asp-controller="Contacts" asp-area="admin" asp-route-page="@i" class="pagination-number">@i</a>
+                                    <a asp-action="Index" asp-controller="Contacts" asp-area="Admin" asp-route-page="@i" class="pagination-number">@i</a>
                                 }
                             }
                             
@@ -125,14 +125,14 @@
                                 {
                                     <span class="pagination-ellipsis">...</span>
                                 }
-                                <a asp-action="Index" asp-controller="Contacts" asp-area="admin" asp-route-page="@totalPages" class="pagination-number">@totalPages</a>
+                                <a asp-action="Index" asp-controller="Contacts" asp-area="Admin" asp-route-page="@totalPages" class="pagination-number">@totalPages</a>
                             }
                         }
                     </div>
                     
                     @if (currentPage < totalPages)
                     {
-                        <a asp-action="Index" asp-controller="Contacts" asp-area="admin" asp-route-page="@(currentPage + 1)" class="pagination-btn">
+                        <a asp-action="Index" asp-controller="Contacts" asp-area="Admin" asp-route-page="@(currentPage + 1)" class="pagination-btn">
                             Next
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m9 18 6-6-6-6"/>

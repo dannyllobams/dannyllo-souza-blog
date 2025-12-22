@@ -21,13 +21,13 @@
             <div class="login-card">
                 <!-- Logo -->
                 <div class="login-logo">
-                    <div class="login-logo-text">Admin<span>Panel</span></div>
+                    <img src="~/images/logo-white.png" />
                 </div>
                 
                 <p class="login-subtitle">Enter your credentials to access the panel</p>
                 
                 <!-- Login Form -->
-                <form method="post" asp-action="Login" asp-controller="Auth" asp-area="Admin">
+                <form method="post">
                     <div class="form-group">
                         <label class="form-label" for="email">Email</label>
                         <div class="form-input-icon">
@@ -48,14 +48,6 @@
                             </svg>
                             <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required>
                         </div>
-                    </div>
-                    
-                    <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
-                        <label class="form-checkbox">
-                            <input type="checkbox" name="remember">
-                            <span>Remember me</span>
-                        </label>
-                        <a href="#" style="color: var(--admin-primary); text-decoration: none; font-size: 14px;">Forgot password</a>
                     </div>
                     
                     <button type="submit" class="btn-login">

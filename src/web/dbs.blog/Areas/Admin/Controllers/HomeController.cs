@@ -24,9 +24,9 @@ namespace dbs.blog.Areas.Admin.Controllers
             var totalPageViewsQueryResult = await _mediator.ProjectionQuery<PageViewsQuery, int>(new PageViewsQuery());
             var totalCommentsQueryResult = await _mediator.ProjectionQuery<CountCommentsQuery, int>(new CountCommentsQuery());
             var postsQueryResult = await _mediator.ProjectionQuery<PostsQuery, IEnumerable<PostListItemDTO>>(new PostsQuery() { PublishedOnly = false, PageNumber = 1 });
+            var totalAllPostsResult = await _mediator.ProjectionQuery<CountAllPostsQuery, int>(new CountAllPostsQuery());
 
             var posts = postsQueryResult.ValidationResult.IsValid ? (postsQueryResult.Response?.ToList() ?? new List<PostListItemDTO>()) : new List<PostListItemDTO>();
-            var totalAllPostsResult = await _mediator.ProjectionQuery<CountAllPostsQuery, int>(new CountAllPostsQuery());
             var totalAllPosts = totalAllPostsResult.ValidationResult.IsValid ? totalAllPostsResult.Response : 0;
 
             // ViewBag para o partial _PostList funcionar no dashboard

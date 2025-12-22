@@ -127,7 +127,7 @@
 <div class="content-card">
     <div class="card-header">
         <h2 class="card-title">All Posts</h2>
-        <a asp-action="NewPost" asp-controller="Posts" asp-area="admin" class="btn btn-primary">
+        <a asp-action="NewPost" asp-controller="Posts" asp-area="Admin" class="btn btn-primary">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14" />
                 <path d="M12 5v14" />
@@ -166,7 +166,7 @@
                             <td style="color: var(--admin-text-muted); font-size: 14px;">@post.Date.ToString("dd MMM yyyy")</td>
                             <td>
                                 <div class="action-btns">
-                                    <a asp-action="EditPost" asp-controller="Posts" asp-area="admin" asp-route-url="@post.Url" class="action-btn edit" title="Edit">
+                                    <a asp-action="EditPost" asp-controller="Posts" asp-area="Admin" asp-route-url="@post.Url" class="action-btn edit" title="Edit">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                             <path d="m15 5 4 4" />
@@ -210,7 +210,7 @@
                 <div class="pagination">
                     @if (currentPage > 1)
                     {
-                        <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@(currentPage - 1)" class="pagination-btn">
+                        <a asp-action="BlogPosts" asp-controller="Home" asp-area="Admin" asp-route-page="@(currentPage - 1)" class="pagination-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m15 18-6-6 6-6" />
                             </svg>
@@ -225,7 +225,7 @@
 
                             if (startPage > 1)
                             {
-                                <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="1" class="pagination-number">1</a>
+                                <a asp-action="BlogPosts" asp-controller="Home" asp-area="Admin" asp-route-page="1" class="pagination-number">1</a>
                                 @if (startPage > 2)
                                 {
                                     <span class="pagination-ellipsis">...</span>
@@ -240,7 +240,7 @@
                                 }
                                 else
                                 {
-                                    <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@i" class="pagination-number">@i</a>
+                                    <a asp-action="BlogPosts" asp-controller="Home" asp-area="Admin" asp-route-page="@i" class="pagination-number">@i</a>
                                 }
                             }
 
@@ -250,14 +250,14 @@
                                 {
                                     <span class="pagination-ellipsis">...</span>
                                 }
-                                <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@totalPages" class="pagination-number">@totalPages</a>
+                                <a asp-action="BlogPosts" asp-controller="Home" asp-area="Admin" asp-route-page="@totalPages" class="pagination-number">@totalPages</a>
                             }
                         }
                     </div>
 
                     @if (currentPage < totalPages)
                     {
-                        <a asp-action="BlogPosts" asp-controller="Home" asp-area="admin" asp-route-page="@(currentPage + 1)" class="pagination-btn">
+                        <a asp-action="BlogPosts" asp-controller="Home" asp-area="Admin" asp-route-page="@(currentPage + 1)" class="pagination-btn">
                             Next
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m9 18 6-6-6-6" />

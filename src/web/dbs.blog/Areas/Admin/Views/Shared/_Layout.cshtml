@@ -17,8 +17,8 @@
         <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
-                <a href="/admin" class="sidebar-logo">
-                    <div class="sidebar-logo-text">Admin<span>Panel</span></div>
+                <a asp-action="Index" asp-controller="Home" asp-area="Admin" class="sidebar-logo">
+                    <img src="~/images/logo-white.png" />
                 </a>
             </div>
 
@@ -26,7 +26,7 @@
                 <!-- Main Section -->
                 <div class="nav-section">
                     <div class="nav-section-title">Main</div>
-                    <a href="/admin" class="nav-item active">
+                    <a asp-action="Index" asp-controller="Home" asp-area="Admin" class="nav-item active">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect width="7" height="9" x="3" y="3" rx="1" />
                             <rect width="7" height="5" x="14" y="3" rx="1" />
@@ -49,14 +49,14 @@
                         </svg>
                         Blog Posts
                     </a>
-                    <a asp-action="Index" asp-controller="Categories" asp-area="admin" class="nav-item">
+                    <a asp-action="Index" asp-controller="Categories" asp-area="Admin" class="nav-item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
                             <path d="M7 7h.01" />
                         </svg>
                         Categories
                     </a>
-                    <a asp-action="Index" asp-controller="Tags" asp-area="admin" class="nav-item">
+                    <a asp-action="Index" asp-controller="Tags" asp-area="Admin" class="nav-item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z" />
                             <path d="M6 9.01V9" />
@@ -74,7 +74,7 @@
                         </svg>
                         Comments
                     </a>*@
-                    <a asp-action="Index" asp-controller="Contacts" asp-area="admin" class="nav-item">
+                    <a asp-action="Index" asp-controller="Contacts" asp-area="Admin" class="nav-item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                             <polyline points="22,6 12,13 2,6" />
@@ -156,7 +156,7 @@
                         <span class="notification-dot"></span>
                     </button>*@
 
-                    <a href="/admin/auth/logout" class="header-btn" title="Logout">
+                    <a asp-action="Logout" asp-controller="Auth" asp-area="Admin" class="header-btn" title="Logout">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                             <polyline points="16 17 21 12 16 7" />

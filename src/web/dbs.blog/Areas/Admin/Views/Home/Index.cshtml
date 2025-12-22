@@ -64,7 +64,7 @@
         </div>
         <div class="card-body">
             <div class="quick-actions">
-                <a asp-action="NewPost" asp-controller="Posts" asp-area="admin" class="quick-action-item">
+                <a asp-action="NewPost" asp-controller="Posts" asp-area="Admin" class="quick-action-item">
                     <div class="quick-action-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -77,7 +77,7 @@
                     </div>
                 </a>
                 
-                <a href="/admin/categories" class="quick-action-item">
+                <a asp-action="Index" asp-controller="Categories" asp-area="Admin" class="quick-action-item">
                     <div class="quick-action-icon" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>

@@ -54,7 +54,7 @@ namespace dbs.blog.Areas.Admin.Controllers
 
                 if (result.ValidationResult.IsValid)
                 {
-                    return RedirectToAction("Index", "Home", new { area = "admin" });
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
 
                 foreach (var error in result.ValidationResult.Errors)
@@ -69,7 +69,7 @@ namespace dbs.blog.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("[controller]/[action]/{url}")]
+        [HttpGet("[area]/[controller]/[action]/{url}")]
         public async Task<IActionResult> EditPost(string url)
         {
             var postQueryResult = await _mediatorHandler.ProjectionQuery<PostQuery, PostDTO>(new PostQuery { Url = url });

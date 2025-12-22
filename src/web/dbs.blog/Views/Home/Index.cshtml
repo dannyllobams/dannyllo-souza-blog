@@ -1,6 +1,11 @@
-﻿@{
+﻿@using dbs.blog.DTOs
+
+@{
     ViewData["Title"] = "Home Page";
+
+    var posts = ViewBag.Posts != null ? ViewBag.Posts as List<PostListItemDTO> : new List<PostListItemDTO>();
 }
+
 <!-- start of main -->
 <main class="bg-dark relative z-10 pt-[92px] lg:pt-[106px] min-h-[82vh] overflow-hidden">
 
@@ -23,7 +28,6 @@
         </div>
     </section>
     <!-- ================= end of banner ================= -->
-
     <!-- ================= start of core techs ================= -->
     <section class="pt-28 lg:pb-10 overflow-hidden">
         <div class="container">
@@ -52,7 +56,6 @@
         </div>
     </section>
     <!-- ================= end of core techs ================= -->
-
     <!-- ================= start of process ================= -->
     <section class="py-28">
         <div class="container">
@@ -112,93 +115,55 @@
     </section>
     <!-- ================= end of process ================= -->
 
-    <!-- ================= start of blog/posts ================= -->
-    <section class="py-28 bg-white text-dark rounded-b-2xl">
-        <div class="container">
-            <div class="row mb-16 items-end">
-                <div class="sm:col-8 order-2 sm:order-1">
-                    <!-- Section Title -->
-                    <h2 class="text-black text-4xl lg:text-5xl font-secondary font-medium -mt-[6px] text-center sm:text-left">
-                        My weekly thoughts
-                    </h2>
+    @if (posts!.Any())
+    {
+        <!-- ================= start of blog/posts ================= -->
+        <section class="py-28 bg-white text-dark rounded-b-2xl">
+            <div class="container">
+                <div class="row mb-16 items-end">
+                    <div class="sm:col-8 order-2 sm:order-1">
+                        <!-- Section Title -->
+                        <h2 class="text-black text-4xl lg:text-5xl font-secondary font-medium -mt-[6px] text-center sm:text-left">
+                            My weekly thoughts
+                        </h2>
+                    </div>
+                    <div class="sm:col-4 order-1 sm:order-2 block mb-4 sm:mb-0 text-center sm:text-right">
+                        <!-- Section Subtitle -->
+                        <span class="font-secondary text-2xl leading-none text-black/75">Blog</span>
+                    </div>
                 </div>
-                <div class="sm:col-4 order-1 sm:order-2 block mb-4 sm:mb-0 text-center sm:text-right">
-                    <!-- Section Subtitle -->
-                    <span class="font-secondary text-2xl leading-none text-black/75">Blog</span>
+                <!-- Blog Posts -->
+                <div class="row md:gx-4 gy-5">
+                    @foreach (var post in posts)
+                    {
+                        <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:0ms;--md-delay:0ms;--sm-delay:0ms">
+                            <article class="relative group text-center">
+                                <div class="relative overflow-hidden rounded-lg mb-8">
+                                    <img alt="@post.Title" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="@post.MainImageUrl" />
+                                </div>
+                                <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
+                                    <!-- Blog Post Tags and Date -->
+                                    <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
+                                        <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">@post.Categories</span>
+                                        <span class="opacity-75 text-sm">@post.Date.ToString("dd MMM yyyy")</span>
+                                    </div>
+                                    <!-- Blog Post Title -->
+                                    <h3 class="text-xl md:text-2xl leading-tight">
+                                        <a class="stretched-link" href="@Url.Action("Post", "Blog")/@post.Url">@post.Title</a>
+                                    </h3>
+                                </div>
+                            </article>
+                        </div>
+                    }
                 </div>
-            </div>
-            <!-- Blog Posts -->
-            <div class="row md:gx-4 gy-5">
-                <!-- Blog Post 1 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:0ms;--md-delay:0ms;--sm-delay:0ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="You have no idea how much better you can feel!" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/01.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">lifestyle</span>
-                                <span class="opacity-75 text-sm">25 May / 2023</span>
-                            </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="#">You have no idea how much better you can feel!</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 2 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:75ms;--md-delay:75ms;--sm-delay:75ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="The Role of a Developer in Creating Communities" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/09.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">post elements</span>
-                                <span class="opacity-75 text-sm">23 May / 2023</span>
-                            </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">The Role of a Developer in Creating Communities</a>
-                            </h3>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Blog Post 3 -->
-                <div class="lg:col-4 sm:col-6 init-delay" data-aos="fade-up-sm" data-aos-duration="500" style="--lg-delay:150ms;--md-delay:0ms;--sm-delay:0ms">
-                    <article class="relative group text-center">
-                        <div class="relative overflow-hidden rounded-lg mb-8">
-                            <!-- Blog Post Image -->
-                            <img alt="Ways to improve usability and accessibility" loading="lazy" width="620" height="500" class="duration-700 group-hover:scale-110 group-hover:-rotate-1 object-cover w-full rounded-lg group-hover:brightness-75 bg-light/20" src="~/images/blog/12.jpg" />
-                        </div>
-                        <div class="px-2 sm:px-6 transition-all duration-500 group-hover:opacity-60">
-                            <!-- Blog Post Tags and Date -->
-                            <div class="flex flex-wrap items-center justify-center mb-4 space-x-5">
-                                <span class="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 capitalize">tech</span>
-                                <span class="opacity-75 text-sm">13 May / 2023</span>
-                            </div>
-                            <!-- Blog Post Title -->
-                            <h3 class="text-xl md:text-2xl leading-tight">
-                                <a class="stretched-link" href="./blog-single.html">Ways to improve usability and accessibility</a>
-                            </h3>
-                        </div>
-                    </article>
+                <!-- All Posts Button -->
+                <div class="text-center mt-16">
+                    <a class="button button-dark" asp-action="Index" asp-controller="Blog">
+                        <span>All Posts</span>
+                    </a>
                 </div>
             </div>
-            <!-- All Posts Button -->
-            <div class="text-center mt-16">
-                <a class="button button-dark" href="blog.html">
-                    <span>All Posts</span>
-                </a>
-            </div>
-        </div>
-    </section>
-    <!-- ================= end of blog/posts ================= -->
+        </section>
+        <!-- ================= end of blog/posts ================= -->
+    }
 </main>

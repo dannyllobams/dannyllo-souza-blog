@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using dbs.blog.Application.Commands;
+using dbs.blog.Application.Queries;
+using dbs.blog.DTOs;
 using dbs.blog.Models;
 using dbs.core.Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -9,15 +11,27 @@ namespace dbs.blog.Controllers
 
     public class HomeController : Controller
     {
-        private readonly IMediatorHandler _mediator;
+        private readonly IMediatorHandler _mediatorHandler;
 
         public HomeController(IMediatorHandler mediator)
         {
-            _mediator = mediator;
+            _mediatorHandler = mediator;
         }
 
         public IActionResult Index()
         {
+            var postsQueryResult = _mediatorHandler.ProjectionQuery<PostsQuery, IEnumerable<PostListItemDTO>>(new PostsQuery()
+            {
+                PageNumber = 1,
+                PageSize = 3,
+                PublishedOnly = true
+            }).Result;
+
+            if(postsQueryResult.ValidationResult.IsValid)
+            {
+                ViewBag.Posts = postsQueryResult.Response!.ToList();
+            }
+
             return View();
         }
 
@@ -39,7 +53,7 @@ namespace dbs.blog.Controllers
                 return View(model);
             }
 
-            var submitContactResponse = await _mediator.CallCommand<SubmitContactCommand>(new SubmitContactCommand()
+            var submitContactResponse = await _mediatorHandler.CallCommand<SubmitContactCommand>(new SubmitContactCommand()
             {
                 Name = model.Name,
                 Email = model.Email,
