@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using dbs.blog.Basics;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace dbs.blog.Areas.Admin.Controllers
@@ -10,11 +12,19 @@ namespace dbs.blog.Areas.Admin.Controllers
     [AllowAnonymous]
     public class AuthController : Controller
     {
-        private const string ADMIN_EMAIL = "dannyllobams@gmail.com";
-        private const string ADMIN_PASSWORD = "J@p@m@n5";
+        private readonly AdministratorSettings _administratorSettings;
+        public AuthController(IOptions<AdministratorSettings> administratorSettings)
+        {
+            _administratorSettings = administratorSettings.Value;
+        }
 
         public IActionResult Login()
         {
+            if(HttpContext.User.Identity?.IsAuthenticated ?? false)
+            {
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
+            }
+
             return View();
         }
 
@@ -22,7 +32,7 @@ namespace dbs.blog.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string password, string? returnUrl)
         {
-            if (email != ADMIN_EMAIL || password != ADMIN_PASSWORD)
+            if (email != _administratorSettings.Email || password != _administratorSettings.Password)
             {
                 ModelState.AddModelError("", "Invalid username or password.");
                 return View();

@@ -7,6 +7,7 @@ namespace dbs.blog.Configuration
         public static IServiceCollection ConfigureWebApp(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AppSettings>(configuration);
+            services.ConfigureAdministrator(configuration);
 
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
@@ -15,5 +16,12 @@ namespace dbs.blog.Configuration
 
             return services;
         }
+
+        private static void ConfigureAdministrator(this IServiceCollection services, IConfiguration configuration)
+        {
+            var administratorSettingsSection = configuration.GetSection("AdministratorSettings");
+            services.Configure<AdministratorSettings>(administratorSettingsSection);
+        }
+
     }
 }
