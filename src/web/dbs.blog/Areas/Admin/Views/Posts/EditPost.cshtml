@@ -299,6 +299,36 @@
     </form>
 </div>
 
+<!-- Image Upload Modal -->
+<div id="imageUploadModal" class="image-upload-modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Upload Image</h3>
+            <button type="button" class="modal-close" id="closeImageModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="featured-image-upload" id="editorImageUpload">
+                <div class="upload-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                        <circle cx="9" cy="9" r="2" />
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                    </svg>
+                    <p>Click or drag an image</p>
+                    <span>PNG, JPG up to 5MB</span>
+                </div>
+                <input type="file" id="editorImageInput" name="editorImage" accept="image/*" hidden>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script type="module">
         import { Editor } from 'https://esm.sh/@@tiptap/core@2.1.13'
@@ -408,10 +438,7 @@
                         }
                         break;
                     case 'image':
-                        const imageUrl = prompt('Enter image URL:');
-                        if (imageUrl) {
-                            editor.chain().focus().setImage({ src: imageUrl }).run();
-                        }
+                        openImageUploadModal();
                         break;
                     case 'undo':
                         editor.chain().focus().undo().run();
@@ -587,43 +614,43 @@
                 })
 
                 document.getElementById('btnSaveDraft').addEventListener('click', function() {
-                const form = document.getElementById('postForm');
+                    const form = document.getElementById('postForm');
 
-                document.getElementById('editorContent').value = editor.getHTML();
+                    document.getElementById('editorContent').value = editor.getHTML();
 
-                const existingHiddenTags = form.querySelectorAll('input[type="hidden"][name="Tags"]');
-                existingHiddenTags.forEach(el => el.remove());
+                    const existingHiddenTags = form.querySelectorAll('input[type="hidden"][name="Tags"]');
+                    existingHiddenTags.forEach(el => el.remove());
 
-                const tagElements = document.querySelectorAll('#tagsList .tag-item');
-                tagElements.forEach(tagEl => {
-                    const tagText = tagEl.childNodes[0].textContent.trim();
-                    if(tagText) {
-                        const hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'Tags';
-                        hiddenInput.value = tagText;
-                        form.appendChild(hiddenInput);
-                    }
-                });
+                    const tagElements = document.querySelectorAll('#tagsList .tag-item');
+                    tagElements.forEach(tagEl => {
+                        const tagText = tagEl.childNodes[0].textContent.trim();
+                        if(tagText) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'Tags';
+                            hiddenInput.value = tagText;
+                            form.appendChild(hiddenInput);
+                        }
+                    });
 
-                const existingHiddenCategories = form.querySelectorAll('input[type="hidden"][name="Categories"]');
-                existingHiddenCategories.forEach(el => el.remove());
+                    const existingHiddenCategories = form.querySelectorAll('input[type="hidden"][name="Categories"]');
+                    existingHiddenCategories.forEach(el => el.remove());
 
-                const categoryElements = document.querySelectorAll('input[name="category"]:checked');
-                categoryElements.forEach(categoryEl => {
-                    const categoryText = categoryEl.value;
-                    if(categoryText) {
-                        const hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'Categories';
-                        hiddenInput.value = categoryText;
-                        form.appendChild(hiddenInput);
-                    }
-                });
+                    const categoryElements = document.querySelectorAll('input[name="category"]:checked');
+                    categoryElements.forEach(categoryEl => {
+                        const categoryText = categoryEl.value;
+                        if(categoryText) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'Categories';
+                            hiddenInput.value = categoryText;
+                            form.appendChild(hiddenInput);
+                        }
+                    });
 
-                form.method = "post";
-                form.action = '@Url.Action("EditPost", "Posts", new { url = Model.Slug })';
-                form.submit();
+                    form.method = "post";
+                    form.action = '@Url.Action("EditPost", "Posts", new { url = Model.Slug })';
+                    form.submit();
                 });
 
                 document.getElementById('btnPublish').addEventListener('click', async function () {
@@ -720,5 +747,114 @@
         document.getElementById('MetaDescription').addEventListener('input', function() {
             this.nextElementSibling.textContent = `${this.value.length}/160`;
         });
+
+        // Image Upload Modal
+        const imageUploadModal = document.getElementById('imageUploadModal');
+        const editorImageUpload = document.getElementById('editorImageUpload');
+        const editorImageInput = document.getElementById('editorImageInput');
+        const closeImageModal = document.getElementById('closeImageModal');
+        const modalOverlay = imageUploadModal?.querySelector('.modal-overlay');
+
+        function openImageUploadModal() {
+            if (!imageUploadModal || !editorImageUpload) return;
+            
+            imageUploadModal.style.display = 'flex';
+            // Reset upload area
+            const placeholder = editorImageUpload.querySelector('.upload-placeholder');
+            if (placeholder) {
+                placeholder.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                        <circle cx="9" cy="9" r="2" />
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                    </svg>
+                    <p>Click or drag an image</p>
+                    <span>PNG, JPG up to 5MB</span>
+                `;
+            }
+            editorImageUpload.classList.remove('has-image');
+            if (editorImageInput) {
+                editorImageInput.value = '';
+            }
+        }
+
+        function closeImageUploadModal() {
+            if (imageUploadModal) {
+                imageUploadModal.style.display = 'none';
+            }
+        }
+
+        if (closeImageModal) {
+            closeImageModal.addEventListener('click', closeImageUploadModal);
+        }
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', closeImageUploadModal);
+        }
+
+        // Open modal when clicking upload area
+        if (editorImageUpload && editorImageInput) {
+            editorImageUpload.addEventListener('click', () => editorImageInput.click());
+        }
+
+        // Drag and drop for editor image upload
+        if (editorImageUpload) {
+            editorImageUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                editorImageUpload.style.borderColor = 'var(--admin-primary)';
+            });
+
+            editorImageUpload.addEventListener('dragleave', () => {
+                editorImageUpload.style.borderColor = 'var(--admin-border)';
+            });
+
+            editorImageUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                editorImageUpload.style.borderColor = 'var(--admin-border)';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0] && editorImageInput) {
+                    editorImageInput.files = e.dataTransfer.files;
+                    editorImageInput.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+
+        // Handle file selection
+        if (editorImageInput) {
+            editorImageInput.addEventListener('change', async function() {
+            if (this.files && this.files[0]) {
+                const formData = new FormData();
+                formData.append('file', this.files[0]);
+
+                const placeholder = editorImageUpload.querySelector('.upload-placeholder');
+                const originalContent = placeholder.innerHTML;
+                placeholder.innerHTML = '<div class="spinner">Uploading...</div>';
+
+                try {
+                    const response = await fetch('/Admin/Posts/UploadImage', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Insert image into editor
+                        editor.chain().focus().setImage({ src: data.url }).run();
+                        
+                        // Close modal
+                        closeImageUploadModal();
+                    } else {
+                        console.error('Upload failed');
+                        placeholder.innerHTML = originalContent;
+                        alert('Failed to upload image. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    placeholder.innerHTML = originalContent;
+                    alert('An error occurred during upload.');
+                }
+            }
+            });
+        }
     </script>
 }

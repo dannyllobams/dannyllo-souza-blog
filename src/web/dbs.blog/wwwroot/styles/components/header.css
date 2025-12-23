@@ -18,6 +18,10 @@
   transition: 0.3s color 0s, 0.3s opacity 0s;
 }
 
+.navbar a.active {
+  @apply text-white/100;
+}
+
 .navbar .indicator {
   @apply absolute h-full w-full left-0 top-0 hidden lg:block opacity-0 scale-50;
   transition: 0.45s cubic-bezier(0.075, 0.82, 0.165, 1);

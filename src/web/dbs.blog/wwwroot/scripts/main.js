@@ -13,7 +13,7 @@
   const headerRef = document.querySelector(".header");
   const navRef = headerRef.querySelector(".navbar");
   const linkRef = navRef.querySelectorAll("a");
-  const activeLinkRef = navRef.querySelector(".active");
+  let activeLinkRef = navRef.querySelector(".active");
   const navIndicatorRef = headerRef.querySelector(".indicator");
   const hideOnScrollRef = headerRef.querySelectorAll(".hideOnScroll");
   let indicatorPosition = null;
@@ -22,6 +22,10 @@
 
   // Function to set indicator position
   const setIndicatorPosition = (left, width) => {
+    if (left === null || width === null || left === undefined || width === undefined) {
+      navIndicatorRef.style.opacity = 0;
+      return;
+    }
     indicatorPosition = { left, width };
     navIndicatorRef.style.left = `${indicatorPosition.left}px`;
     navIndicatorRef.style.width = `${indicatorPosition.width}px`;
@@ -29,19 +33,28 @@
 
   // Update indicator position when active link changes
   window.addEventListener("load", () => {
+    // Re-query for active link in case it was added dynamically
+    activeLinkRef = navRef.querySelector("a.active");
     if (activeLinkRef) {
       setIndicatorPosition(activeLinkRef.offsetLeft, activeLinkRef.offsetWidth);
+      setTimeout(() => {
+        navIndicatorRef.style.opacity = 1;
+        navIndicatorRef.style.transform = "scaleX(1)";
+      }, 300);
+    } else {
+      // Se não há link ativo, esconde o indicador
+      navIndicatorRef.style.opacity = 0;
     }
-    setTimeout(() => {
-      navIndicatorRef.style.opacity = 1;
-      navIndicatorRef.style.transform = "scaleX(1)";
-    }, 300);
   });
 
   // Handle mouse leave event
   const handleLinkMouseLeave = () => {
+    // Re-query for active link
+    activeLinkRef = navRef.querySelector("a.active");
     if (activeLinkRef) {
       setIndicatorPosition(activeLinkRef.offsetLeft, activeLinkRef.offsetWidth);
+    } else {
+      navIndicatorRef.style.opacity = 0;
     }
   };
   navRef.addEventListener("mouseleave", handleLinkMouseLeave);
@@ -50,11 +63,16 @@
   const handleLinkMouseEnter = (event) => {
     const link = event.currentTarget;
     setIndicatorPosition(link.offsetLeft, link.offsetWidth);
+    navIndicatorRef.style.opacity = 1;
   };
 
   // Handle link click event
   const handleLinkClick = (event) => {
     const link = event.currentTarget;
+    // Remove active class from all links
+    linkRef.forEach(l => l.classList.remove("active"));
+    // Add active class to clicked link
+    link.classList.add("active");
     activeLinkRef = link;
     setIndicatorPosition(link.offsetLeft, link.offsetWidth);
   };

@@ -1,10 +1,13 @@
 using dbs.blog.Application.Commands;
 using dbs.blog.Application.Queries;
 using dbs.blog.Areas.Admin.Models;
+using dbs.blog.Basics;
 using dbs.blog.DTOs;
 using dbs.blog.Models;
+using dbs.blog.Services;
 using dbs.core.Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace dbs.blog.Areas.Admin.Controllers
 {
@@ -12,12 +15,18 @@ namespace dbs.blog.Areas.Admin.Controllers
     public class PostsController : Controller
     {
         private readonly IMediatorHandler _mediatorHandler;
-        private readonly IWebHostEnvironment _env;
+        private readonly IMediaStorageService _mediaStorageService;
 
-        public PostsController(IMediatorHandler mediatorHandler, IWebHostEnvironment env)
+        private readonly AppSettings _appSettings;
+
+        public PostsController(
+            IMediatorHandler mediatorHandler,
+            IMediaStorageService mediaStorageService,
+            IOptions<AppSettings> appSettings)
         {
             _mediatorHandler = mediatorHandler;
-            _env = env;
+            _mediaStorageService = mediaStorageService;
+            _appSettings = appSettings.Value;
         }
 
         [HttpGet]
@@ -88,7 +97,7 @@ namespace dbs.blog.Areas.Admin.Controllers
             return View(EditPostViewModel.FromPostDTO(postQueryResult.Response ?? new PostDTO()));
         }
 
-        [HttpPost("[controller]/[action]/{url}")]
+        [HttpPost("[area]/[controller]/[action]/{url}")]
         public async Task<IActionResult> EditPost(string url, EditPostViewModel model)
         {
             if (ModelState.IsValid)
@@ -181,19 +190,13 @@ namespace dbs.blog.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
-            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
-            var filePath = Path.Combine(_env.WebRootPath, "images", "posts", fileName);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = file.OpenReadStream())
             {
-                await file.CopyToAsync(stream);
+                var uniqueFileName = await _mediaStorageService.UploadFile(file.FileName, stream);
+                var urlImage = Path.Join(_appSettings.AssetsUrl, uniqueFileName);
+
+                return Ok(new { url = urlImage });
             }
-
-            var urlImage = $"/images/posts/{fileName}";
-
-            return Ok(new { url = urlImage });
         }
     }
 }

@@ -60,49 +60,77 @@ namespace dbs.blog.Helpers
 
         private bool ShouldBeActive()
         {
-            string? currentController = string.Empty;
-            string? currentAction = string.Empty;
+            // Obtém valores atuais da rota
+            var routeData = ViewContext!.RouteData;
+            var currentController = routeData.Values["Controller"]?.ToString() ?? string.Empty;
+            var currentAction = routeData.Values["Action"]?.ToString() ?? string.Empty;
 
-            if (ViewContext!.RouteData.Values["Controller"] != null)
+            // Verifica se há critérios especificados
+            bool hasController = !string.IsNullOrWhiteSpace(Controller);
+            bool hasAction = !string.IsNullOrWhiteSpace(Action);
+            bool hasPage = !string.IsNullOrWhiteSpace(Page);
+            bool hasRouteValues = RouteValues.Count > 0;
+
+            // Se não há nenhum critério especificado, não deve ser ativo
+            if (!hasController && !hasAction && !hasPage && !hasRouteValues)
             {
-                currentController = ViewContext.RouteData.Values["Controller"]!.ToString();
+                return false;
             }
 
-            if (ViewContext.RouteData.Values["Action"] != null)
+            // Verifica Controller
+            if (hasController)
             {
-                currentAction = ViewContext.RouteData.Values["Action"]!.ToString();
-            }
-
-            if (Controller != null)
-            {
-                if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController!.ToLower())
+                if (string.IsNullOrWhiteSpace(currentController))
                 {
                     return false;
                 }
-
-                if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction!.ToLower())
-                {
-                    return false;
-                }
-            }
-
-            if (Page != null)
-            {
-                if (!string.IsNullOrWhiteSpace(Page) && Page.ToLower() != _contextAccessor.HttpContext!.Request.Path.Value!.ToLower())
+                if (!string.Equals(Controller, currentController, StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
             }
 
-            foreach (KeyValuePair<string, string> routeValue in RouteValues)
+            // Verifica Action
+            if (hasAction)
             {
-                if (!ViewContext.RouteData.Values.ContainsKey(routeValue.Key) ||
-                    ViewContext.RouteData.Values[routeValue.Key]!.ToString() != routeValue.Value)
+                if (string.IsNullOrWhiteSpace(currentAction))
+                {
+                    return false;
+                }
+                if (!string.Equals(Action, currentAction, StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
             }
 
+            // Verifica Page
+            if (hasPage)
+            {
+                var currentPath = _contextAccessor.HttpContext!.Request.Path.Value ?? string.Empty;
+                if (!string.Equals(Page, currentPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            // Verifica RouteValues
+            if (hasRouteValues)
+            {
+                foreach (var routeValue in RouteValues)
+                {
+                    if (!routeData.Values.ContainsKey(routeValue.Key))
+                    {
+                        return false;
+                    }
+                    var routeDataValue = routeData.Values[routeValue.Key]?.ToString() ?? string.Empty;
+                    if (!string.Equals(routeValue.Value, routeDataValue, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            // Se chegou até aqui, todos os critérios especificados corresponderam
             return true;
         }
 
