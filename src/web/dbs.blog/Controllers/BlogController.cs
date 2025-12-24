@@ -18,7 +18,7 @@ namespace dbs.blog.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var totalAllPostsResult = await _mediatorHandler.ProjectionQuery<CountAllPostsQuery, int>(new CountAllPostsQuery());
+            var totalPublishedPostsResult = await _mediatorHandler.ProjectionQuery<CountPublishedPostsQuery, int>(new CountPublishedPostsQuery());
             var postsQueryResult = await _mediatorHandler.ProjectionQuery<PostsQuery, IEnumerable<PostListItemDTO>>(new PostsQuery()
             {
                 PageNumber = 1,
@@ -31,10 +31,10 @@ namespace dbs.blog.Controllers
                 ViewBag.Posts = postsQueryResult.Response!.ToList();
             }
 
-            var totalAllPosts = totalAllPostsResult.ValidationResult.IsValid ? totalAllPostsResult.Response : 1;
+            var totalAllPoststotalPublishedPosts = totalPublishedPostsResult.ValidationResult.IsValid ? totalPublishedPostsResult.Response : 1;
 
-            ViewBag.TotalPages = (int)Math.Ceiling(totalAllPosts / (double)PAGE_SIZE);
-            ViewBag.TotalPosts = totalAllPosts;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalAllPoststotalPublishedPosts / (double)PAGE_SIZE);
+            ViewBag.TotalPosts = totalAllPoststotalPublishedPosts;
 
             return View();
         }

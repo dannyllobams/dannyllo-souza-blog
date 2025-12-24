@@ -1,5 +1,7 @@
 ﻿using Cortex.Mediator.Queries;
+using dbs.blog.Basics;
 using dbs.blog.DTOs;
+using dbs.blog.Services;
 using dbs.core.Messages;
 using dbs.domain.Repositories;
 using FluentValidation;
@@ -32,9 +34,13 @@ namespace dbs.blog.Application.Queries
     public class PostsQueryHandler : QueryHandler, IQueryHandler<PostsQuery, QueryResult<IEnumerable<PostListItemDTO>>>
     {
         private readonly IPostsRepository _postsRepository;
-        public PostsQueryHandler(IPostsRepository postsRepository)
+        private readonly IMemoryCacheService _cache;
+        public PostsQueryHandler(
+            IPostsRepository postsRepository,
+            IMemoryCacheService cache)
         {
             _postsRepository = postsRepository;
+            _cache = cache;
         }
 
         public async Task<QueryResult<IEnumerable<PostListItemDTO>>> Handle(PostsQuery query, CancellationToken cancellationToken)
@@ -44,9 +50,19 @@ namespace dbs.blog.Application.Queries
                 return new QueryResult<IEnumerable<PostListItemDTO>>(query.ValidationResult);
             }
 
+            var cacheKey = _cache
+                .BuildVersionedKey(CacheKeys.POSTS_NAMESPACE, CacheKeys.BLOG_POSTS(query.PublishedOnly, query.PageNumber, query.PageSize));
+
+            if (_cache.TryGet<IEnumerable<PostListItemDTO>>(cacheKey, out var cachedPosts))
+            {
+                return Response(cachedPosts!);
+            }
+
             var posts = query.PublishedOnly ? 
                 await _postsRepository.GetAllPublishedsAsync(query.PageNumber, query.PageSize) : 
                 await _postsRepository.GetAllAsync(query.PageNumber, query.PageSize);
+
+            _cache.Set(cacheKey, posts.Select(PostListItemDTO.ToPostListItemDTO).ToList());
 
             return Response(posts.Select(PostListItemDTO.ToPostListItemDTO));
         }

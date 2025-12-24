@@ -19,7 +19,7 @@ namespace dbs.blog.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var totalPostsQueryResult = await _mediator.ProjectionQuery<CountPostsQuery, int>(new CountPostsQuery());
+            var totalPostsQueryResult = await _mediator.ProjectionQuery<CountPublishedPostsQuery, int>(new CountPublishedPostsQuery());
             var totalPageViewsQueryResult = await _mediator.ProjectionQuery<PageViewsQuery, int>(new PageViewsQuery());
             var totalCommentsQueryResult = await _mediator.ProjectionQuery<CountCommentsQuery, int>(new CountCommentsQuery());
             var postsQueryResult = await _mediator.ProjectionQuery<PostsQuery, IEnumerable<PostListItemDTO>>(new PostsQuery() { PublishedOnly = false, PageNumber = 1 });

@@ -16,17 +16,14 @@ namespace dbs.blog.Controllers.api
         private const int DedupeMinutes = 30;
 
         private readonly IMediatorHandler _mediator;
-        private readonly IMemoryCache _cache;
-        private readonly IMemorySeededHashService _memorySeededHashService;
+        private readonly IMemoryCacheService _memoryCacheService;
 
         public PageViewsController(
             IMediatorHandler mediator,
-            IMemoryCache cache,
-            IMemorySeededHashService memorySeededHashService)
+            IMemoryCacheService memoryCacheService)
         {
             _mediator = mediator;
-            _cache = cache;
-            _memorySeededHashService = memorySeededHashService;
+            _memoryCacheService = memoryCacheService;
         }
 
         #region CONTROLLER HELPERS
@@ -66,7 +63,7 @@ namespace dbs.blog.Controllers.api
             }
 
             var visitorKey = BuildVisitorKey(command.PageId);
-            if (_cache.TryGetValue(visitorKey, out _))
+            if (_memoryCacheService.TryGetHashed(visitorKey, out _))
             {
                 return CustomResponse();
             }
@@ -75,12 +72,7 @@ namespace dbs.blog.Controllers.api
 
             if(response.IsValid)
             {
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(DedupeMinutes)
-                };
-
-                _cache.Set(visitorKey, true, cacheEntryOptions);
+                _memoryCacheService.SetHashed(visitorKey, true);
             }
 
             return CustomResponse(response);
@@ -91,9 +83,7 @@ namespace dbs.blog.Controllers.api
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var ua = Request.Headers.UserAgent.ToString();
 
-            var visitorHash = $"{ip}|{ua}";
-
-            return _memorySeededHashService.ComputeHash($"pv:{pageId}:{visitorHash}");
+            return $"{ip}|{ua}";
         }
     }
 }

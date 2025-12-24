@@ -18,7 +18,7 @@ namespace dbs.blog.Configuration
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddMediaStorageService(configuration);
-            services.AddSingleton<IMemorySeededHashService, MemorySeededHashService>();
+            services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
 
             services.AddScoped<IMediatorHandler, MediatorHandler>();
             services.AddScoped<IPostsRepository, PostsRepository>();

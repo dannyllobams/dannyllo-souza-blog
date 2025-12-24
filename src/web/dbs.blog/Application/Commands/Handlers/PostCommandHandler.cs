@@ -1,4 +1,6 @@
 ﻿using Cortex.Mediator.Commands;
+using dbs.blog.Basics;
+using dbs.blog.Services;
 using dbs.core.Messages;
 using dbs.domain.Basics.Enum;
 using dbs.domain.Model;
@@ -15,9 +17,13 @@ namespace dbs.blog.Application.Commands.Handlers
         ICommandHandler<UnpublishPostCommand, ValidationResult>
     {
         private readonly IPostsRepository _postsRepository;
-        public PostCommandHandler(IPostsRepository postsRepository)
+        private readonly IMemoryCacheService _cache;
+        public PostCommandHandler(
+            IPostsRepository postsRepository,
+            IMemoryCacheService cache)
         {
             _postsRepository = postsRepository;
+            _cache = cache;
         }
 
         public async Task<AddPostCommand.Result> Handle(AddPostCommand command, CancellationToken cancellationToken)
@@ -180,6 +186,8 @@ namespace dbs.blog.Application.Commands.Handlers
             post.Status = PostStatus.PUBLISHED;
             _postsRepository.Update(post);
 
+            _cache.BumpVersion(CacheKeys.POSTS_NAMESPACE);
+
             await SaveChangesAsync(_postsRepository.UnitOfWork, cancellationToken);
 
             return ValidationResult;
@@ -202,6 +210,8 @@ namespace dbs.blog.Application.Commands.Handlers
 
             post.Status = PostStatus.DRAFT;
             _postsRepository.Update(post);
+
+            _cache.BumpVersion(CacheKeys.POSTS_NAMESPACE);
 
             await SaveChangesAsync(_postsRepository.UnitOfWork, cancellationToken);
 

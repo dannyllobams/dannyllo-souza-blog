@@ -1,5 +1,7 @@
 ﻿using Cortex.Mediator.Queries;
+using dbs.blog.Basics;
 using dbs.blog.DTOs;
+using dbs.blog.Services;
 using dbs.core.Messages;
 using dbs.domain.Repositories;
 using FluentValidation;
@@ -29,9 +31,13 @@ namespace dbs.blog.Application.Queries
     public class PostQueryHandler : QueryHandler, IQueryHandler<PostQuery, QueryResult<PostDTO>>
     {
         private readonly IPostsRepository _postsRepository;
-        public PostQueryHandler(IPostsRepository postsRepository)
+        private readonly IMemoryCacheService _cache;
+        public PostQueryHandler(
+            IPostsRepository postsRepository,
+            IMemoryCacheService cache)
         {
             _postsRepository = postsRepository;
+            _cache = cache;
         }
 
         public async Task<QueryResult<PostDTO>> Handle(PostQuery query, CancellationToken cancellationToken)
@@ -39,6 +45,13 @@ namespace dbs.blog.Application.Queries
             if(!query.IsValid())
             {
                 return new QueryResult<PostDTO>(this.ValidationResult);
+            }
+
+            var cacheKey = _cache.BuildVersionedKey(CacheKeys.POSTS_NAMESPACE, CacheKeys.BLOG_POST(query.Url));
+
+            if (_cache.TryGet(cacheKey, out PostDTO? cachedPost))
+            {
+                return QueryResult<PostDTO>.Success(cachedPost!, this.ValidationResult);
             }
 
             var post = await this._postsRepository.GetPostByUrlSlugAsync(query.Url, cancellationToken);
@@ -49,7 +62,10 @@ namespace dbs.blog.Application.Queries
                 return new QueryResult<PostDTO>(this.ValidationResult);
             }
 
-            return QueryResult<PostDTO>.Success(PostDTO.ToPostDTO(post), this.ValidationResult);
+            var response = PostDTO.ToPostDTO(post);
+            _cache.Set(cacheKey, response);
+
+            return QueryResult<PostDTO>.Success(response, this.ValidationResult);
         }
     }
 }
