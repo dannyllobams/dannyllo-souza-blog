@@ -29,7 +29,7 @@ namespace dbs.infra.Mappings
 
             builder.Property(p => p.Content)
                 .IsRequired()
-                .HasColumnType("varchar(MAX)");
+                .HasColumnType("text");
 
             builder.Property(p => p.Summary)
                 .IsRequired()

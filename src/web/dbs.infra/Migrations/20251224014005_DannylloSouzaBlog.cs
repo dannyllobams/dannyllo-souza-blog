@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dbs.infra.Migrations
 {
     /// <inheritdoc />
-    public partial class Posts : Migration
+    public partial class DannylloSouzaBlog : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,10 +15,10 @@ namespace dbs.infra.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "varchar(200)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,35 +26,53 @@ namespace dbs.infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ConfigurationKeys",
+                name: "Contacts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Key = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<string>(type: "varchar(200)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "varchar(200)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(254)", nullable: false),
+                    Message = table.Column<string>(type: "varchar(1000)", nullable: false),
+                    Received = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConfigurationKeys", x => x.Id);
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageViews",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    TotalViews = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageViews", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "varchar(200)", nullable: false),
                     UrlSlug = table.Column<string>(type: "varchar(200)", nullable: false),
                     UrlMainImage = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Content = table.Column<string>(type: "varchar(MAX)", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
                     Summary = table.Column<string>(type: "varchar(1000)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     MetaTitle = table.Column<string>(type: "varchar(200)", nullable: true),
                     MetaDescription = table.Column<string>(type: "varchar(500)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,10 +83,10 @@ namespace dbs.infra.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "varchar(200)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,13 +97,13 @@ namespace dbs.infra.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserName = table.Column<string>(type: "varchar(200)", nullable: false),
                     Content = table.Column<string>(type: "varchar(200)", nullable: false),
-                    CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CommentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    PostId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,15 +117,16 @@ namespace dbs.infra.Migrations
                         name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "PostCategories",
                 columns: table => new
                 {
-                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PostId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,8 +149,8 @@ namespace dbs.infra.Migrations
                 name: "PostTags",
                 columns: table => new
                 {
-                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PostId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TagId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -161,6 +180,12 @@ namespace dbs.infra.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PageViews_PageId_Date",
+                table: "PageViews",
+                columns: new[] { "PageId", "Date" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PostCategories_CategoryId",
                 table: "PostCategories",
                 column: "CategoryId");
@@ -184,7 +209,10 @@ namespace dbs.infra.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "ConfigurationKeys");
+                name: "Contacts");
+
+            migrationBuilder.DropTable(
+                name: "PageViews");
 
             migrationBuilder.DropTable(
                 name: "PostCategories");

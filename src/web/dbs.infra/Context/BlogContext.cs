@@ -17,7 +17,7 @@ namespace dbs.infra.Context
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<ConfigurationKey> ConfigurationKeys { get; set; }
+        public DbSet<PageView> PageViews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

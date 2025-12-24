@@ -76,11 +76,17 @@
             <div class="tags">
                 @foreach (var tag in Model.Tags)
                 {
-                    <span class="status-badge" style="text-transform: capitalize;">@tag</span>
+                    <span class="status-badge" style="text-transform: capitalize; margin: 0 5px;">@tag</span>
                 }
             </div>
 
-            <div class="tiptap-content" id="tiptapEditor"></div>
+            <div class="tiptap-content" id="tiptapEditor">
+                <article data-pageview="post" data-post-id="@Model.Id">
+                    <div contenteditable="false" translate="no" class="tiptap ProseMirror">
+                        @Html.Raw(Model.Content)
+                    </div>
+                </article>
+            </div>
         </div>
     </section>
 
@@ -88,58 +94,5 @@
 <!-- end of main -->
 
 @section Scripts {
-    <script type="module">
-        import { Editor } from 'https://esm.sh/@@tiptap/core@2.1.13'
-        import StarterKit from 'https://esm.sh/@@tiptap/starter-kit@2.1.13'
-        import Link from 'https://esm.sh/@@tiptap/extension-link@2.1.13'
-        import Placeholder from 'https://esm.sh/@@tiptap/extension-placeholder@2.1.13'
-        import Image from 'https://esm.sh/@@tiptap/extension-image@2.1.13'
-        import TextAlign from 'https://esm.sh/@@tiptap/extension-text-align@2.1.13'
-
-
-        const editor = new Editor({
-            element: document.querySelector('#tiptapEditor'),
-            extensions: [
-                StarterKit.configure({
-                    heading: {
-                        levels: [1, 2, 3]
-                    }
-                }),
-                Link.configure({
-                    openOnClick: false,
-                    HTMLAttributes: {
-                        target: '_blank',
-                        rel: 'noopener noreferrer'
-                    }
-                }),
-                Placeholder.configure({
-                    placeholder: 'Start writing your post here...'
-                }),
-                Image.configure({
-                    inline: false,
-                    allowBase64: true,
-                    HTMLAttributes: {
-                        class: 'editor-image'
-                    }
-                }),
-                TextAlign.configure({
-                    types: ['heading', 'paragraph', 'image']
-                })
-            ],
-            content: @(Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Content ?? ""))),
-            editorProps: {
-                attributes: {
-                    class: 'tiptap'
-                }
-            },
-            onUpdate: ({ editor }) => {
-                document.getElementById('editorContent').value = editor.getHTML();
-                updateToolbarState();
-            },
-            onSelectionUpdate: () => {
-                updateToolbarState();
-            },
-            editable: false
-        });
-    </script>
-}
+    <script src="~/scripts/pageview-beacon.js"></script>
+}  

@@ -15,13 +15,15 @@ namespace dbs.blog.Configuration
         public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<BlogContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddMediaStorageService(configuration);
+            services.AddSingleton<IMemorySeededHashService, MemorySeededHashService>();
 
             services.AddScoped<IMediatorHandler, MediatorHandler>();
             services.AddScoped<IPostsRepository, PostsRepository>();
             services.AddScoped<IContactRepository, ContactRepository>();
+            services.AddScoped<IPageViewRepository, PageViewRepository>();
 
             services.AddCortexMediator(
                 configuration: configuration,

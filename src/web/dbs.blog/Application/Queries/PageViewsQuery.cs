@@ -1,5 +1,6 @@
 ﻿using Cortex.Mediator.Queries;
 using dbs.core.Messages;
+using dbs.domain.Repositories;
 
 namespace dbs.blog.Application.Queries
 {
@@ -16,21 +17,27 @@ namespace dbs.blog.Application.Queries
 
     public class PageViewsQueryHandler : QueryHandler, IQueryHandler<PageViewsQuery, QueryResult<int>>
     {
-        public Task<QueryResult<int>> Handle(PageViewsQuery query, CancellationToken cancellationToken)
+        private readonly IPageViewRepository _pageViewRepository;
+        public PageViewsQueryHandler(IPageViewRepository pageViewRepository)
+        {
+            _pageViewRepository = pageViewRepository;
+        }
+
+        public async Task<QueryResult<int>> Handle(PageViewsQuery query, CancellationToken cancellationToken)
         {
             int pageViews = 0;
 
             if (query.PostId.HasValue)
             {
-                pageViews = 42;
+                pageViews = await _pageViewRepository.GetTotalViews(query.PostId.Value, cancellationToken);
             }
             else
             {
-                pageViews = 100;
+                pageViews = await _pageViewRepository.GetTotalViews(cancellationToken);
             }
 
 
-            return Task.FromResult(QueryResult<int>.Success(pageViews, query.ValidationResult));
+            return QueryResult<int>.Success(pageViews, query.ValidationResult);
         }
     }
 }

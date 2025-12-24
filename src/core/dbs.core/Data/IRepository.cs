@@ -2,9 +2,13 @@
 
 namespace dbs.core.Data
 {
-    public interface IRepository<T> where T : Entity
+    public interface  IRepository 
     {
         IUnitOfWork UnitOfWork { get; }
+    }
+
+    public interface IRepository<T> : IRepository where T : Entity
+    {
 
         Task<int> CountAsync();
         Task<T?> GetByIdAsync(Guid id);

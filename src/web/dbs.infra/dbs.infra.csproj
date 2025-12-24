@@ -10,12 +10,16 @@
     <PackageReference Include="FluentValidation" Version="12.1.1" />
 	<PackageReference Include="EntityFrameworkCore.Extensions" Version="5.0.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.22" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
+	<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\dbs.core\dbs.core.csproj" />
     <ProjectReference Include="..\dbs.domain\dbs.domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

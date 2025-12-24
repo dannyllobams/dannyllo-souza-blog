@@ -4,20 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureWebApp(builder.Configuration);
-builder.Services
-    .AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    })
-    .AddCookie(options =>
-    {
-        options.Cookie.Name = "dbs.blog.admin.auth";
-        options.SlidingExpiration = true;
-
-        options.LoginPath = "/Admin/auth/login";
-    });
+builder.Services.ConfigureAuth(builder.Configuration);
+builder.Services.ConfigureRateLimit(builder.Configuration);
 
 builder.Services.AddAuthorization();
 
@@ -36,6 +24,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapAreaControllerRoute(
     name: "admin",
