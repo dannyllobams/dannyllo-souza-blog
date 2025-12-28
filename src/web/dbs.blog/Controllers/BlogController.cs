@@ -54,6 +54,10 @@ namespace dbs.blog.Controllers
                 return View();
             }
 
+            ViewData["MetaTitle"] = postQueryResult.Response!.SEO.MetaTitle;
+            ViewData["MetaDescription"] = postQueryResult.Response!.SEO.MetaTitle;
+            ViewData["OgImage"] = postQueryResult.Response!.UrlMainImage;
+
             return View(postQueryResult.Response);
         }
 
