@@ -38,6 +38,8 @@ namespace dbs.blog.Application.Commands.Handlers
 
             await SaveChangesAsync(_postsRepository.UnitOfWork, cancellationToken);
 
+            _cache.BumpVersion(CacheKeys.POSTS_NAMESPACE);
+
             return new AddPostCommand.Result(createdPost, ValidationResult);
         }
 
@@ -112,6 +114,8 @@ namespace dbs.blog.Application.Commands.Handlers
             _postsRepository.Update(post);
             await SaveChangesAsync(_postsRepository.UnitOfWork, cancellationToken);
 
+            _cache.BumpVersion(CacheKeys.POSTS_NAMESPACE);
+
             return ValidationResult;
         }
 
@@ -138,6 +142,8 @@ namespace dbs.blog.Application.Commands.Handlers
 
             _postsRepository.Remove(post);
             await SaveChangesAsync(_postsRepository.UnitOfWork, cancellationToken);
+
+            _cache.BumpVersion(CacheKeys.POSTS_NAMESPACE);
 
             return ValidationResult;
         }
